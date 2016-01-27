@@ -1,148 +1,113 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using Castle.Core.Internal;
+using ImageProcessor.Attributes;
+using ImageProcessor.Models;
 
 namespace ImageProcessor.Helpers
 {
 	public interface ICommandArgumentsHelper
 	{
-		Dictionary<CommandsWithAnArgument, string> CommandAndArguments
-		{
-			get;
-			set;
-		}
-		HashSet<CommandsWithOutAnArgument> Commands
-		{
-			get;
-			set;
-		}
 		void ParseArgs(string[] args);
 	}
 	public class CommandArgumentsHelper : ICommandArgumentsHelper
 	{
-		public CommandArgumentsHelper()
+		private List<CommandLineArgModel> parse(string[] args)
 		{
-			CommandAndArguments = new Dictionary<CommandsWithAnArgument, string>();
-			Commands = new HashSet<CommandsWithOutAnArgument>();
-		}
-		public Dictionary<CommandsWithAnArgument, string> CommandAndArguments
-		{
-			get;
-			set;
-		}
-		public HashSet<CommandsWithOutAnArgument> Commands
-		{
-			get;
-			set;
-		}
-		public IImageParser ImageParser
-		{
-			get;
-			set;
-		}
-		public IProcessor Processor
-		{
-			get;
-			set;
-		}
-		public Locations Locations
-		{
-			get;
-			set;
-		}
-		public override string ToString()
-		{
-			return String.Join(" ",
-				Commands.Select(command => String.Format("-{0}", command))
-				.Concat(CommandAndArguments.Select(command => String.Format("-{0} \"{1}\"", command.Key, command.Value))));
-		}
-		public void ParseArgs(string[] args)
-		{
-			for (var index = 0; index < args.Length; index++)
-			{
-				CommandsWithAnArgument commandsWithAnArgument;
-				CommandsWithOutAnArgument commandsWithOutAnArgument;
+			CommandLineArgModel currentArgument = null;
+			var parameters = new List<string>();
+			var arguments = new List<CommandLineArgModel>();
 
-				if (Enum.TryParse(args[index].TrimStart('-'), true, out commandsWithAnArgument))
+			foreach (var arg in args.Where(arg => !String.IsNullOrEmpty(arg)))
+			{
+				if (arg.StartsWith("-"))
 				{
-					if (index == args.Length - 1) throw new ArgumentException(String.Format("The {0} command requires an argument.", commandsWithAnArgument));
-					index++;
-					CommandAndArguments[commandsWithAnArgument] = args[index];
+					if (currentArgument != null)
+					{
+						currentArgument.Parameters = parameters.ToArray();
+						arguments.Add(currentArgument);
+					}
+
+					var argument = arg.Substring(1);
+
+					CommandsLineArg commandLineArg;
+					if (!Enum.TryParse(argument, true, out commandLineArg))
+						throw new ArgumentException(String.Format("The argument \"{0}\" is not recognized.", argument));
+
+					parameters.Clear();
+
+					currentArgument = new CommandLineArgModel
+					{
+						Argument = commandLineArg
+					};
 				}
-				else if (Enum.TryParse(args[index].TrimStart('-'), true, out commandsWithOutAnArgument))
+				else if (currentArgument == null)
 				{
-					Commands.Add(commandsWithOutAnArgument);
+					throw new ArgumentException("the first command line argument must be an argument (i.e. -Input)");
 				}
 				else
 				{
-					throw new ArgumentException("The following command was not recognized: " + args[index]);
+					parameters.Add(arg);
 				}
 			}
 
-			if (!CommandAndArguments.ContainsKey(CommandsWithAnArgument.Input)) throw new ArgumentException("Missing the input file.");
-			if (!CommandAndArguments.ContainsKey(CommandsWithAnArgument.Output)) throw new ArgumentException("Missing the output file.");
+			if (arguments.Count == 0) throw new ArgumentException("No arguments were provided.");
 
-			Locations.Input = CommandAndArguments[CommandsWithAnArgument.Input];
-			if (!File.Exists(Locations.Input)) throw new ArgumentException("The input file is missing.");
-
-			Locations.Output = CommandAndArguments[CommandsWithAnArgument.Output];
-			if (File.Exists(Locations.Output)) File.Delete(Locations.Output);
-
-			Bitmap inputImage;
-			if (!ImageParser.TryParse(Locations.Input, out inputImage)) throw new InvalidProgramException("Unable to read the image.");
-			Locations.InputImage = Locations.NewImage = inputImage;
-
-			ProcessImage();
-			
-			if (Locations.NewImage == null) throw new InvalidProgramException("Failed to generate an image.");
-
-			ImageParser.SaveOutput(this);
+			return arguments;
 		}
-
-		public void ProcessImage()
+		private void validate(List<CommandLineArgModel> args)
 		{
-			Locations.NewImage = Locations.InputImage;
-
-			if (CommandAndArguments.ContainsKey(CommandsWithAnArgument.Scale))
+			foreach (var enumMember in Enum.GetValues(typeof(CommandsLineArg))
+				.Cast<CommandsLineArg>()
+				.Select(value => new
+				{
+					Args = args.Where(arg => arg.Argument == value).ToArray(),
+					Member = typeof(CommandsLineArg).GetMember(Convert.ToString(value)).FirstOrDefault(),
+					Value = value
+				})
+				.Where(method => method.Member != null))
 			{
-				double scale;
-				if (!Double.TryParse(CommandAndArguments[CommandsWithAnArgument.Scale], out scale))
-					throw new ArgumentException("The Scale argument must be a number between 0 and 1.");
-				if (scale < 0) throw new ArgumentException("The scale value must be >= 0.");
+				if (enumMember.Member.GetAttribute<RequiredAttribute>() != null &&
+					enumMember.Args.Length == 0)
+					throw new ArgumentException(String.Format("The -{0} argument is required.", enumMember.Value));
 
-				Processor.Scale(scale);
-			}
+				if (enumMember.Member.GetAttribute<OnlyOneAttribute>() != null &&
+					enumMember.Args.Length > 1)
+					throw new ArgumentException(String.Format("Only one -{0} argument is allowed.", enumMember.Value));
 
-			if (Commands.Contains(CommandsWithOutAnArgument.Grayscale))
-			{
-				Processor.Grayscale();
-			}
+				var range = enumMember.Member.GetAttribute<RangeAttribute>();
+				if (range != null &&
+					(enumMember.Args.Length < (int)range.Minimum || enumMember.Args.Length > (int)range.Maximum))
+					throw new ArgumentException(range.ErrorMessage);
 
-			if (CommandAndArguments.ContainsKey(CommandsWithAnArgument.ThresholdFilter))
-			{
-				double threshold;
-				if (!Double.TryParse(CommandAndArguments[CommandsWithAnArgument.ThresholdFilter], out threshold))
-					throw new ArgumentException("The ThresholdFilter argument must be a number between 0 and 1.");
-				if (threshold < 0)
-					threshold = 0;
-				else if (threshold > 1)
-					threshold = 1;
-				Processor.ThresholdFilter(threshold);
+				var regex = enumMember.Member.GetAttribute<RegexAttribute>();
+				if (regex != null && 
+					enumMember.Args.Length > 0 &&
+					enumMember.Args.Any(arg => !regex.IsValid(arg)))
+					throw new ArgumentException(String.Format("The -{0} argument paramters are invalid.", enumMember.Value));
+
+				if (enumMember.Value == CommandsLineArg.Input && !File.Exists(enumMember.Args.First().Parameters.FirstOrDefault()))
+					throw new FileNotFoundException("The input file was not found.");
 			}
 		}
-	}
-	public enum CommandsWithAnArgument
-	{
-		Input,
-		Output,
 
-		Scale,
-		ThresholdFilter
-	}
-	public enum CommandsWithOutAnArgument
-	{
-		Grayscale
+		public IEffectPipe EffectPipe
+		{
+			get;
+			set;
+		}
+		public void ParseArgs(string[] args)
+		{
+			var arguments = parse(args);
+			
+			validate(arguments);
+
+			EffectPipe.ParseArguments(arguments);
+
+			EffectPipe.Process(arguments);
+		}
 	}
 }

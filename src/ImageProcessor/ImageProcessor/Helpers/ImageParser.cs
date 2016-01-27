@@ -2,7 +2,9 @@
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
+using ImageProcessor.Effects;
 using ImageProcessor.Extensions;
+using ImageProcessor.Models;
 using RavuAlHemio.PbmNet;
 
 namespace ImageProcessor.Helpers
@@ -10,10 +12,20 @@ namespace ImageProcessor.Helpers
 	public interface IImageParser
 	{
 		bool TryParse(string path, out Bitmap image);
-		void SaveOutput(ICommandArgumentsHelper helper);
+		void SaveOutput(Bitmap image, bool isGrayscale, bool isBlackAndWhite, string savePath);
 	}
 	public class ImageParser : IImageParser
 	{
+		public IEffect<GrayscaleModel> Grayscale
+		{
+			get;
+			set;
+		}
+		public IEffect<ThresholdFilterModel> ThresholdFilter
+		{
+			get;
+			set;
+		}
 		public ImageFactories.Image8Factory Image8Factory
 		{
 			get;
@@ -25,16 +37,6 @@ namespace ImageProcessor.Helpers
 			set;
 		}
 		public ImageFactories.Image32Factory Image32Factory
-		{
-			get;
-			set;
-		}
-		public IProcessor Processor
-		{
-			get;
-			set;
-		}
-		public Locations Locations
 		{
 			get;
 			set;
@@ -122,13 +124,13 @@ namespace ImageProcessor.Helpers
 			}
 		}
 
-		public void SaveOutput(ICommandArgumentsHelper helper)
+		public void SaveOutput(Bitmap image, bool isGrayscale, bool isBlackAndWhite, string savePath)
 		{
-			var extention = (Path.GetExtension(Locations.Output) ?? "").ToLower();
+			var extention = (Path.GetExtension(savePath) ?? "").ToLower();
 
 			if (String.IsNullOrEmpty(extention))
 			{
-				Locations.NewImage.Save(Locations.Output, ImageFormat.Png);
+				image.Save(savePath, ImageFormat.Png);
 			}
 			else
 			{
@@ -137,59 +139,66 @@ namespace ImageProcessor.Helpers
 				switch (extention)
 				{
 					case ".pbm":
-						if (!helper.CommandAndArguments.ContainsKey(CommandsWithAnArgument.ThresholdFilter))
-							Processor.ThresholdFilter(0.5);
+						if (!isBlackAndWhite)
+							image = ThresholdFilter.Process(new ThresholdFilterModel
+							{
+								DefaultRoi = new RoiModel(image)
+							},
+							image);
 
-						using (var stream = File.OpenWrite(Locations.Output))
+						using (var stream = File.OpenWrite(savePath))
 							writer.WriteImage(
 								new NetpbmImage8(
 									new NetpbmHeader<byte>(
 										ImageType.PBM,
-										Locations.NewImage.Width,
-										Locations.NewImage.Height,
+										image.Width,
+										image.Height,
 										1,
 										new[] { Component.Black },
-										1), Locations.NewImage.EachRow(false)), 
+										1), image.EachRow(false)), 
 									stream, 
 									ImageType.PlainPBM);
 						
 						break;
 					case ".pgm":
-						if (!helper.Commands.Contains(CommandsWithOutAnArgument.Grayscale) &&
-							!helper.CommandAndArguments.ContainsKey(CommandsWithAnArgument.ThresholdFilter))
-							Processor.Grayscale();
+						if (!isGrayscale && !isBlackAndWhite)
+								image = Grayscale.Process(new GrayscaleModel
+								{
+									DefaultRoi = new RoiModel(image)
+								},
+								image);
 
-						using (var stream = File.OpenWrite(Locations.Output))
+						using (var stream = File.OpenWrite(savePath))
 							writer.WriteImage(
 								new NetpbmImage8(
 									new NetpbmHeader<byte>(
 										ImageType.PBM,
-										Locations.NewImage.Width,
-										Locations.NewImage.Height,
+										image.Width,
+										image.Height,
 										1,
 										new[] { Component.Black },
-										255), Locations.NewImage.EachRow(false)),
+										255), image.EachRow(false)),
 									stream,
 									ImageType.PlainPGM);
 
 						break;
 					case ".ppm":
-						using (var stream = File.OpenWrite(Locations.Output))
+						using (var stream = File.OpenWrite(savePath))
 							writer.WriteImage(
 								new NetpbmImage8(
 									new NetpbmHeader<byte>(
 										ImageType.PBM,
-										Locations.NewImage.Width,
-										Locations.NewImage.Height,
+										image.Width,
+										image.Height,
 										1,
 										new[] { Component.Red, Component.Green, Component.Blue },
-										255), Locations.NewImage.EachRow()),
+										255), image.EachRow()),
 									stream,
 									ImageType.PlainPPM);
 
 						break;
 					default:
-						Locations.NewImage.Save(Locations.Output);
+						image.Save(savePath);
 						break;
 						
 				}
