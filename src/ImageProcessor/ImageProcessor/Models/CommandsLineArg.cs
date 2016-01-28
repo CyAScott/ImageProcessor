@@ -35,7 +35,7 @@ namespace ImageProcessor.Models
 
 		/// <summary>
 		/// The ThresholdFilter argument is used to convert the image into a set of black or white pixels.
-		/// The 'brightness' of each pixel will be calculated into a value between 0 and 1 (where 1 is white and 0 is black).
+		/// The 'brightness' of each pixel will be calculated into a value between 0 and 1 (where 0 is white and 1 is black).
 		/// 
 		/// roi (optional)
 		/// This effect will only be applied to the roi parameter.
@@ -43,8 +43,8 @@ namespace ImageProcessor.Models
 		/// threshold (optional)
 		/// The threshold parameter must be a value between 0 and 1. 
 		/// If threshold parameter is not provided, then 0.5 will be used.
-		/// If the parameter is 0 then the whole image will be white.
-		/// If the parameter is 1 then the whole image will be black.
+		/// If the parameter is 1 then the whole image will be white.
+		/// If the parameter is 0 then the whole image will be black.
 		/// </summary>
 		[Range(0, 2, ErrorMessage = "The -ThresholdFilter argument requires at most two parameters (i.e. -ThresholdFilter roi:0,0,10,10 threshold:0.5).")]
 		[Regex("(" + RoiModel.RoiPattern + "|" + ThresholdFilterModel.ThresholdPattern + ")")]
@@ -59,5 +59,24 @@ namespace ImageProcessor.Models
 		[Range(0, 2, ErrorMessage = "The -Grayscale argument requires at most one parameter (i.e. -ThresholdFilter roi:0,0,10,10).")]
 		[Regex(RoiModel.RoiPattern)]
 		Grayscale,
+
+		/// <summary>
+		/// Applies an uniform smoothing filter to an image using the median method.
+		/// 
+		/// roi (optional)
+		/// This effect will only be applied to the roi parameter.
+		/// 
+		/// window (optional)
+		/// The default value is 3. This value must be a positive odd integer.
+		/// 
+		/// x (optional)
+		/// The default value is true. If true, then the median value for the column of pixels on the center of the window will be used.
+		/// 
+		/// y (optional)
+		/// The default value is true. If true, then the median value for the row of pixels on the center of the window will be used.
+		/// </summary>
+		[Range(0, 2, ErrorMessage = "The -Median argument requires at most four parameters (i.e. -Median roi:0,0,10,10 window:3 x:true y:false).")]
+		[Regex("(" + RoiModel.RoiPattern + "|" + MedianModel.WindowPattern + "|" + MedianModel.XPattern + "|" + MedianModel.YPattern + ")")]
+		Median,
 	}
 }

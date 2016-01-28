@@ -14,9 +14,7 @@ namespace ImageProcessor.Installers
 				.FromThisAssembly()
 				.InNamespace("ImageProcessor.Helpers")
 				.WithServiceAllInterfaces()
-				.LifestyleSingleton());
-
-			container.Register(
+				.LifestyleSingleton(),
 				Component
 					.For<ImageFactories.Image8Factory>()
 					.Instance(new ImageFactories.Image8Factory())

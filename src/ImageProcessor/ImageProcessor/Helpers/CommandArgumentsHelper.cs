@@ -6,6 +6,7 @@ using System.Linq;
 using Castle.Core.Internal;
 using ImageProcessor.Attributes;
 using ImageProcessor.Models;
+using NLog;
 
 namespace ImageProcessor.Helpers
 {
@@ -13,6 +14,7 @@ namespace ImageProcessor.Helpers
 	{
 		void ParseArgs(string[] args);
 	}
+	[LoggerName("Command Line Parser")]
 	public class CommandArgumentsHelper : ICommandArgumentsHelper
 	{
 		private List<CommandLineArgModel> parse(string[] args)
@@ -54,6 +56,12 @@ namespace ImageProcessor.Helpers
 				}
 			}
 
+			if (currentArgument != null)
+			{
+				currentArgument.Parameters = parameters.ToArray();
+				arguments.Add(currentArgument);
+			}
+
 			if (arguments.Count == 0) throw new ArgumentException("No arguments were provided.");
 
 			return arguments;
@@ -79,14 +87,14 @@ namespace ImageProcessor.Helpers
 					throw new ArgumentException(String.Format("Only one -{0} argument is allowed.", enumMember.Value));
 
 				var range = enumMember.Member.GetAttribute<RangeAttribute>();
-				if (range != null &&
-					(enumMember.Args.Length < (int)range.Minimum || enumMember.Args.Length > (int)range.Maximum))
+				if (range != null && enumMember.Args.Length > 0 &&
+					enumMember.Args.Any(arg => arg.Parameters.Length < (int)range.Minimum || arg.Parameters.Length > (int)range.Maximum))
 					throw new ArgumentException(range.ErrorMessage);
 
 				var regex = enumMember.Member.GetAttribute<RegexAttribute>();
 				if (regex != null && 
 					enumMember.Args.Length > 0 &&
-					enumMember.Args.Any(arg => !regex.IsValid(arg)))
+					enumMember.Args.SelectMany(arg => arg.Parameters).Any(param => !regex.IsValid(param)))
 					throw new ArgumentException(String.Format("The -{0} argument paramters are invalid.", enumMember.Value));
 
 				if (enumMember.Value == CommandsLineArg.Input && !File.Exists(enumMember.Args.First().Parameters.FirstOrDefault()))
@@ -99,8 +107,15 @@ namespace ImageProcessor.Helpers
 			get;
 			set;
 		}
+		public ILogger Log
+		{
+			get;
+			set;
+		}
 		public void ParseArgs(string[] args)
 		{
+			Log.Info("Parsing Input");
+
 			var arguments = parse(args);
 			
 			validate(arguments);

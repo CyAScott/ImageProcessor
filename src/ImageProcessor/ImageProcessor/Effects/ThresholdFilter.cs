@@ -12,7 +12,7 @@ namespace ImageProcessor.Effects
 		{
 			get
 			{
-				return CommandsLineArg.Grayscale;
+				return CommandsLineArg.ThresholdFilter;
 			}
 		}
 		public override Bitmap Process(ThresholdFilterModel arg, Bitmap image)
@@ -25,7 +25,7 @@ namespace ImageProcessor.Effects
 				{
 					var brightness = 1d - image.GetPixel(x, y).GetBrightness();
 
-					image.SetPixel(x, y, brightness > threshold ? Color.Black : Color.White);
+					image.SetPixel(x, y, brightness >= threshold ? Color.Black : Color.White);
 				}
 
 			return image;
@@ -35,7 +35,10 @@ namespace ImageProcessor.Effects
 			return new ThresholdFilterModel
 			{
 				Roi = RoiModel.Parse(arg),
-				Threshold = Convert.ToDouble(arg.Parameters.FirstOrDefault(param => Regex.IsMatch(param, "^" + ThresholdFilterModel.ThresholdPattern + "$", RegexOptions.IgnoreCase)) ?? "0.5")
+				Threshold = arg.Parameters
+					.Where(param => Regex.IsMatch(param, "^" + ThresholdFilterModel.ThresholdPattern + "$", RegexOptions.IgnoreCase))
+					.Select(param => (double?)Convert.ToDouble(param.Substring(param.IndexOf(':') + 1).Trim()))
+					.FirstOrDefault() ?? 0.5d
 			};
 		}
 	}
@@ -51,7 +54,7 @@ namespace ImageProcessor.Effects
 			get;
 			set;
 		}
-		public const string ThresholdPattern = @"\s*threshold\s*\:\s*(0*1(\.?|\.0*)|0*\.\d+)";
+		public const string ThresholdPattern = @"\s*threshold\s*\:\s*(0*|0*1(\.?|\.0*)|0*\.\d+)\s*";
 		public double Threshold
 		{
 			get;

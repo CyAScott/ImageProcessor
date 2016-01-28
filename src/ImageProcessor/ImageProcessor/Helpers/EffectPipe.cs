@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
+using ImageProcessor.Attributes;
 using ImageProcessor.Models;
+using NLog;
 
 namespace ImageProcessor.Helpers
 {
@@ -12,6 +13,7 @@ namespace ImageProcessor.Helpers
 		void ParseArguments(List<CommandLineArgModel> args);
 		void Process(List<CommandLineArgModel> args);
 	}
+	[LoggerName("Effect Pipe")]
 	public class EffectPipe : IEffectPipe
 	{
 		private class effectInteration
@@ -43,7 +45,12 @@ namespace ImageProcessor.Helpers
 			get;
 			set;
 		}
-		public IImageParser ImageParser
+		public IImageIo ImageIo
+		{
+			get;
+			set;
+		}
+		public ILogger Log
 		{
 			get;
 			set;
@@ -57,15 +64,22 @@ namespace ImageProcessor.Helpers
 		{
 			var inputFile = args.First(arg => arg.Argument == CommandsLineArg.Input).Parameters.First();
 			Bitmap inputImage;
-			if (!ImageParser.TryParse(inputFile, out inputImage)) throw new ArgumentException("Unable to read the input image.");
+			if (!ImageIo.TryParse(inputFile, out inputImage)) throw new ArgumentException("Unable to read the input image.");
 
 			var effects = getEffectPipe(args).ToArray();
 
 			var currentImage = inputImage;
 			foreach (var arg in effects)
 			{
+				var roi = new RoiModel(currentImage);
 				if (arg.EffectParams.ParsedModel is IRoiModel)
-					(arg.EffectParams.ParsedModel as IRoiModel).DefaultRoi = new RoiModel(currentImage);
+				{
+					(arg.EffectParams.ParsedModel as IRoiModel).DefaultRoi = roi;
+					roi = (arg.EffectParams.ParsedModel as IRoiModel).Roi ?? roi;
+				}
+
+				Log.Info("Processing: -{0} {1}", arg.EffectParams.Argument, String.Join(" ", arg.EffectParams.Parameters.Select(param => String.Format("\"{0}\"", param))));
+				Log.Info("Roi: " + roi.Region);
 
 				var nextImage = arg.Effect.ProcessInput(arg.EffectParams, currentImage);
 
@@ -75,7 +89,7 @@ namespace ImageProcessor.Helpers
 			}
 
 			var output = args.First(arg => arg.Argument == CommandsLineArg.Output).Parameters.First();
-			ImageParser.SaveOutput(
+			ImageIo.SaveOutput(
 				currentImage, 
 				effects.Length > 0 && effects.Last().EffectParams.Argument == CommandsLineArg.Grayscale,
 				effects.Length > 0 && effects.Last().EffectParams.Argument == CommandsLineArg.ThresholdFilter,

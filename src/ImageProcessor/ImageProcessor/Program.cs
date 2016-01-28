@@ -10,9 +10,16 @@ namespace ImageProcessor
 	{
 		public static void Main(string[] args)
 		{
-			var log = LogManager.GetLogger("ImageProcessor", typeof(Program));
+			var log = LogManager.GetLogger("Image Processor", typeof(Program));
 			try
 			{
+				args = new[]
+				{
+					"-Input", @"D:\Samples\Sample Images\Color\11.jpg", 
+					"-Output", @"D:\output.png",
+					"-Median", "window:101"//, "y:false"
+				};
+
 				var container = new WindsorContainer();
 
 				container.Install(FromAssembly.This());
@@ -27,6 +34,7 @@ namespace ImageProcessor
 			{
 				log.Error(error, error.Message);
 			}
+			log.Info("Press the enter key to exit.");
 			Console.ReadLine();
 		}
 	}

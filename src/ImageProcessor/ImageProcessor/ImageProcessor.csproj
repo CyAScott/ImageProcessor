@@ -53,17 +53,20 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\LoggerNameAttribute.cs" />
     <Compile Include="Attributes\OnlyOneAttribute.cs" />
     <Compile Include="Attributes\RegexAttribute.cs" />
     <Compile Include="EffectBase.cs" />
     <Compile Include="Effects\Grayscale.cs" />
+    <Compile Include="Effects\Median.cs" />
     <Compile Include="Effects\Scale.cs" />
     <Compile Include="Effects\ThresholdFilter.cs" />
-    <Compile Include="Extensions\ImageExntensions.cs" />
+    <Compile Include="Extensions\ImageExtensions.cs" />
     <Compile Include="Extensions\NetpbmImageExtensions.cs" />
     <Compile Include="Helpers\CommandArgumentsHelper.cs" />
     <Compile Include="Helpers\EffectPipe.cs" />
-    <Compile Include="Helpers\ImageParser.cs" />
+    <Compile Include="Helpers\ImageIo.cs" />
+    <Compile Include="Installers\EffectsInstaller.cs" />
     <Compile Include="Installers\HelperInstaller.cs" />
     <Compile Include="Installers\LogInstaller.cs" />
     <Compile Include="Models\CommandLineArgModel.cs" />

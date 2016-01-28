@@ -2,6 +2,7 @@
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
+using ImageProcessor.Attributes;
 using ImageProcessor.Effects;
 using ImageProcessor.Extensions;
 using ImageProcessor.Models;
@@ -9,12 +10,13 @@ using RavuAlHemio.PbmNet;
 
 namespace ImageProcessor.Helpers
 {
-	public interface IImageParser
+	public interface IImageIo
 	{
 		bool TryParse(string path, out Bitmap image);
 		void SaveOutput(Bitmap image, bool isGrayscale, bool isBlackAndWhite, string savePath);
 	}
-	public class ImageParser : IImageParser
+	[LoggerName("Image IO")]
+	public class ImageIo : IImageIo
 	{
 		public IEffect<GrayscaleModel> Grayscale
 		{
@@ -197,8 +199,30 @@ namespace ImageProcessor.Helpers
 									ImageType.PlainPPM);
 
 						break;
+					case ".bmp":
+						image.Save(savePath, ImageFormat.Bmp);
+						break;
+					case ".gif":
+						image.Save(savePath, ImageFormat.Gif);
+						break;
+					case ".ico":
+						image.Save(savePath, ImageFormat.Icon);
+						break;
+					case ".jpeg":
+					case ".jpg":
+					case ".jif":
+					case ".jfif":
+						image.Save(savePath, ImageFormat.Jpeg);
+						break;
+					case ".png":
+						image.Save(savePath, ImageFormat.Png);
+						break;
+					case ".tif":
+					case ".tiff":
+						image.Save(savePath, ImageFormat.Tiff);
+						break;
 					default:
-						image.Save(savePath);
+						image.Save(savePath, ImageFormat.Png);
 						break;
 						
 				}

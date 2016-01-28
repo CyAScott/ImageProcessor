@@ -1,10 +1,12 @@
 ﻿using Castle.Core;
+using Castle.Core.Internal;
 using Castle.MicroKernel;
 using Castle.MicroKernel.ComponentActivator;
 using Castle.MicroKernel.Context;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
+using ImageProcessor.Attributes;
 using NLog;
 
 namespace ImageProcessor.Installers
@@ -33,7 +35,8 @@ namespace ImageProcessor.Installers
 		protected override object InternalCreate(CreationContext context)
 		{
 			var type = context.Handler.ComponentModel.Implementation;
-			return LogManager.GetLogger(type.Name, type);
+			var loggerName = type.GetAttribute<LoggerNameAttribute>();
+			return loggerName == null ? LogManager.GetLogger(type.Name, type) : LogManager.GetLogger(loggerName.Name, type);
 		}
 
 		protected override void InternalDestroy(object instance)
