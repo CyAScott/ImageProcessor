@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using ImageProcessor.Models;
@@ -8,31 +7,61 @@ namespace ImageProcessor.Effects
 {
 	public class Scale : EffectBase<ScaleModel>
 	{
-		private struct ScalePixel
+		private RawImage scaleDown(double scale, RawImage image)
 		{
-			public Color ToColor()
-			{
-				return Count > 0 ? Color.FromArgb(Convert.ToInt32(R / Count), Convert.ToInt32(G / Count), Convert.ToInt32(B / Count)) : Color.Black;
-			}
-			public override string ToString()
-			{
-				return ToColor().ToString();
-			}
-			public void Reduce()
-			{
-				var color = ToColor();
+			var newHeight = Convert.ToInt32(Math.Round(image.Size.Height * scale));
+			var newWidth = Convert.ToInt32(Math.Round(image.Size.Width * scale));
+			var returnValue = new RawImage(newWidth, newHeight);
+			var roi = new Rectangle(Point.Empty, image.Size);
+			var scaleUp = Math.Pow(scale, -1);
+			var scaleWindow = Math.Max(Convert.ToInt32(Math.Floor(scaleUp)), 1);
 
-				Count = 0;
-				R = color.R;
-				B = color.B;
-				G = color.G;
-			}
-			public long Count;
-			public long R;
-			public long B;
-			public long G;
+			if (scaleWindow%2 == 0) scaleWindow++;
+
+			for (var y = 0; y < newHeight; y++)
+				for (var x = 0; x < newWidth; x++)
+				{
+					var sourceX = Convert.ToInt32(Math.Round(x * scaleUp));
+					var sourceY = Convert.ToInt32(Math.Round(y * scaleUp));
+
+					returnValue.SetPixel(x, y, image.GetAverage(sourceX, sourceY, scaleWindow, scaleWindow, roi));
+				}
+
+			return returnValue;
+		}
+		private RawImage scaleUp(double scale, RawImage image)
+		{
+			var newHeight = Convert.ToInt32(Math.Round(image.Size.Height * scale));
+			var newWidth = Convert.ToInt32(Math.Round(image.Size.Width * scale));
+			var returnValue = new RawImage(newWidth, newHeight);
+			var roi = new Rectangle(Point.Empty, image.Size);
+			var scaleDown = Math.Pow(scale, -1);
+
+			for (var y = 0; y < newHeight; y++)
+				for (var x = 0; x < newWidth; x++)
+				{
+					var sourceX = Convert.ToInt32(Math.Round(x * scaleDown));
+					var sourceY = Convert.ToInt32(Math.Round(y * scaleDown));
+
+					if (sourceX < roi.Width && sourceY < roi.Height)
+						returnValue.SetPixel(x, y, image.GetPixel(sourceX, sourceY));
+				}
+
+			return Median.Process(new MedianModel
+				{
+					DefaultRoi = new RoiModel(returnValue),
+					Window = Convert.ToInt32(Math.Ceiling(scale)),
+					X = true,
+					Y = true
+				},
+				returnValue);
 		}
 
+		public IEffect<MedianModel> Median
+		{
+			get;
+			set;
+		}
 		public override CommandsLineArg Argument
 		{
 			get
@@ -43,106 +72,12 @@ namespace ImageProcessor.Effects
 		public override RawImage Process(ScaleModel arg, RawImage image)
 		{
 			var value = arg.Scale;
-			if (value.Equals(1d)) return image;
 
-			int height = Convert.ToInt32(image.Size.Height * value),
-				width = Convert.ToInt32(image.Size.Width * value),
-				x, y;
+			if (value.Equals(0d)) return new RawImage(0, 0);
+			if (value < 1) return scaleDown(value, image);
+			if (value > 1) return scaleUp(value, image);
 
-			var imagePixels = new ScalePixel[width, height];
-			var newImage = new RawImage(width, height);
-			var xs = new HashSet<int>();
-			var ys = new HashSet<int>();
-
-			for (y = 0; y < image.Size.Height; y++)
-			{
-				var centerY = y * value;
-
-				var targetY = Convert.ToInt32(Math.Round(centerY, 0));
-				if (targetY >= newImage.Size.Height) targetY = newImage.Size.Height - 1;
-
-				for (x = 0; x < image.Size.Width; x++)
-				{
-					var centerX = x * value;
-
-					var targetX = Convert.ToInt32(Math.Round(centerX, 0));
-					if (targetX >= newImage.Size.Width) targetX = newImage.Size.Width - 1;
-
-					var pixel = image.GetPixel(x, y);
-
-					imagePixels[targetX, targetY].R += pixel.R;
-					imagePixels[targetX, targetY].B += pixel.B;
-					imagePixels[targetX, targetY].G += pixel.G;
-
-					imagePixels[targetX, targetY].Count++;
-
-					xs.Add(targetX);
-					ys.Add(targetY);
-				}
-			}
-
-			var hasBlanks = false;
-
-			for (y = 0; y < newImage.Size.Height; y++)
-				for (x = 0; x < newImage.Size.Width; x++)
-				{
-					if (imagePixels[x, y].Count == 0)
-					{
-						if (ys.Contains(y))
-						{
-							for (var subx = x; subx >= 0 && imagePixels[x, y].Count == 0; subx--)
-								if (imagePixels[subx, y].Count > 0)
-									imagePixels[x, y] = imagePixels[subx, y];
-						}
-						else if (xs.Contains(x))
-						{
-							for (var suby = y; suby >= 0 && imagePixels[x, y].Count == 0; suby--)
-								if (imagePixels[x, suby].Count > 0)
-									imagePixels[x, y] = imagePixels[x, suby];
-						}
-
-
-						if (imagePixels[x, y].Count == 0) hasBlanks = true;
-					}
-
-					if (imagePixels[x, y].Count > 0) newImage.SetPixel(x, y, imagePixels[x, y].ToColor());
-				}
-
-			if (hasBlanks)
-				for (y = 0; y < newImage.Size.Height; y++)
-					for (x = 0; x < newImage.Size.Width; x++)
-						if (imagePixels[x, y].Count == 0)
-						{
-							int subx, suby;
-
-							for (subx = x; subx >= 0; subx--)
-								if (imagePixels[subx, y].Count > 0)
-								{
-									imagePixels[x, y].R += imagePixels[subx, y].R;
-									imagePixels[x, y].B += imagePixels[subx, y].B;
-									imagePixels[x, y].G += imagePixels[subx, y].G;
-
-									imagePixels[x, y].Count += imagePixels[subx, y].Count;
-									break;
-								}
-
-							for (suby = y; suby >= 0; suby--)
-								if (imagePixels[x, suby].Count > 0)
-								{
-									imagePixels[x, y].R += imagePixels[x, suby].R;
-									imagePixels[x, y].B += imagePixels[x, suby].B;
-									imagePixels[x, y].G += imagePixels[x, suby].G;
-
-									imagePixels[x, y].Count += imagePixels[x, suby].Count;
-									break;
-								}
-
-							newImage.SetPixel(x, y, imagePixels[x, y].ToColor());
-
-							imagePixels[x, y].Reduce();
-						}
-
-			return newImage;
+			return image;
 		}
 		public override ScaleModel Parse(CommandLineArgModel arg)
 		{

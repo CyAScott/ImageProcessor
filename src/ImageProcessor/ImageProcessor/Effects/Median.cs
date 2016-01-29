@@ -16,26 +16,31 @@ namespace ImageProcessor.Effects
 		}
 		public override RawImage Process(MedianModel arg, RawImage image)
 		{
+			if (arg.Window == 1) return image;
+
 			var roi = (arg.Roi ?? arg.DefaultRoi).Region;
 			var padding = (arg.Window - 1)/2;
 
 			RawImage returnValue = null;
 
-			if (arg.Y)
+			if (padding > 1)
 			{
-				returnValue = new RawImage(image.Size.Width, image.Size.Height);
-				for (var x = roi.X; x < roi.Right; x++)
-					for (var y = roi.Y; y < roi.Bottom; y++)
-						returnValue.SetPixel(x, y, image.GetAverage(x, y - padding, 1, arg.Window, roi));
-				image = returnValue;
-			}
+				if (arg.Y)
+				{
+					returnValue = new RawImage(image.Size.Width, image.Size.Height);
+					for (var x = roi.X; x < roi.Right; x++)
+						for (var y = roi.Y; y < roi.Bottom; y++)
+							returnValue.SetPixel(x, y, image.GetAverage(x, y - padding, 1, arg.Window, roi));
+					image = returnValue;
+				}
 
-			if (arg.X)
-			{
-				returnValue = new RawImage(image.Size.Width, image.Size.Height);
-				for (var x = roi.X; x < roi.Right; x++)
-					for (var y = roi.Y; y < roi.Bottom; y++)
-						returnValue.SetPixel(x, y, image.GetAverage(x - padding, y, arg.Window, 1, roi));
+				if (arg.X)
+				{
+					returnValue = new RawImage(image.Size.Width, image.Size.Height);
+					for (var x = roi.X; x < roi.Right; x++)
+						for (var y = roi.Y; y < roi.Bottom; y++)
+							returnValue.SetPixel(x, y, image.GetAverage(x - padding, y, arg.Window, 1, roi));
+				}
 			}
 
 			return returnValue ?? image;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using ImageProcessor.Attributes;
@@ -55,7 +54,8 @@ namespace ImageProcessor.Helpers
 					if (!isBlackAndWhite)
 						image = ThresholdFilter.Process(new ThresholdFilterModel
 						{
-							DefaultRoi = new RoiModel(image)
+							DefaultRoi = new RoiModel(image),
+							Threshold = 0.5
 						},
 						image);
 
@@ -69,6 +69,8 @@ namespace ImageProcessor.Helpers
 						image);
 					break;
 			}
+
+			if (File.Exists(output)) File.Delete(output);
 
 			image.Save(output);
 		}

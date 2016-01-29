@@ -101,20 +101,21 @@ namespace ImageProcessor.Models
 	}
 	public partial class RawImage
 	{
-		private IEnumerable<IEnumerable<byte>> eachRow(bool useAllColorValues = true)
+		private IEnumerable<IEnumerable<byte>> eachRow(bool useAllColorValues = true, bool binary = false)
 		{
-			for (var row = 0; row < Size.Height; row++)
-				yield return eachColumn(row, useAllColorValues);
+			for (var y = 0; y < Size.Height; y++)
+				yield return eachColumn(y, useAllColorValues, binary);
 		}
-		private IEnumerable<byte> eachColumn(int row, bool useAllColorValues = true)
+		private IEnumerable<byte> eachColumn(int y, bool useAllColorValues = true, bool binary = false)
 		{
-			for (var col = 0; col < rawBytes[row].Length; col += 4)
+			for (var x = 0; x < rawBytes[y].Length; x += 4)
 			{
-				yield return rawBytes[row][col + 2];
+				var b = rawBytes[y][x + 2];
+				yield return binary ? b == 0 ? (byte)0 : (byte)1 : b;
 				if (useAllColorValues)
 				{
-					yield return rawBytes[row][col + 1];
-					yield return rawBytes[row][col];
+					yield return rawBytes[y][x + 1];
+					yield return rawBytes[y][x];
 				}
 			}
 		}
@@ -204,14 +205,15 @@ namespace ImageProcessor.Models
 						writer.WriteImage(
 							new NetpbmImage8(
 								new NetpbmHeader<byte>(
-									ImageType.PBM,
+									ImageType.PlainPGM,
 									Size.Width,
 									Size.Height,
 									1,
-									new[] { Component.Black },
-									1), eachRow(false)),
-								stream,
-								ImageType.PlainPBM);
+									new[] { Component.White },
+									1),
+								eachRow(false, true)),
+							stream,
+							ImageType.PlainPGM);
 
 					break;
 				case ".pgm":
@@ -219,11 +221,11 @@ namespace ImageProcessor.Models
 						writer.WriteImage(
 							new NetpbmImage8(
 								new NetpbmHeader<byte>(
-									ImageType.PBM,
+									ImageType.PlainPGM,
 									Size.Width,
 									Size.Height,
 									1,
-									new[] { Component.Black },
+									new[] { Component.White },
 									255), eachRow(false)),
 								stream,
 								ImageType.PlainPGM);
@@ -234,7 +236,7 @@ namespace ImageProcessor.Models
 						writer.WriteImage(
 							new NetpbmImage8(
 								new NetpbmHeader<byte>(
-									ImageType.PBM,
+									ImageType.PlainPPM,
 									Size.Width,
 									Size.Height,
 									1,
