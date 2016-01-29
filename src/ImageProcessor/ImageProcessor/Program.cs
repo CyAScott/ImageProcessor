@@ -13,12 +13,13 @@ namespace ImageProcessor
 			var log = LogManager.GetLogger("Image Processor", typeof(Program));
 			try
 			{
-				args = new[]
-				{
-					"-Input", @"D:\Samples\Sample Images\Color\11.jpg", 
-					"-Output", @"D:\output.png",
-					"-Median", "window:101"//, "y:false"
-				};
+				//args = new[]
+				//{
+				//	"-Input", @"D:\Samples\Sample Images\Color\11.jpg", 
+				//	"-Output", @"D:\output.png",
+				//	//"-Median", "window:101"//, "y:false",
+				//	"-Median", "Window:101"
+				//};
 
 				var container = new WindsorContainer();
 

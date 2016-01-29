@@ -5,7 +5,6 @@ using System.Drawing.Imaging;
 using ImageProcessor.Attributes;
 using ImageProcessor.Effects;
 using ImageProcessor.Extensions;
-using ImageProcessor.Models;
 using RavuAlHemio.PbmNet;
 
 namespace ImageProcessor.Helpers
@@ -141,12 +140,12 @@ namespace ImageProcessor.Helpers
 				switch (extention)
 				{
 					case ".pbm":
-						if (!isBlackAndWhite)
-							image = ThresholdFilter.Process(new ThresholdFilterModel
-							{
-								DefaultRoi = new RoiModel(image)
-							},
-							image);
+						//if (!isBlackAndWhite)
+						//	image = ThresholdFilter.Process(new ThresholdFilterModel
+						//	{
+						//		DefaultRoi = new RoiModel(image)
+						//	},
+						//	image);
 
 						using (var stream = File.OpenWrite(savePath))
 							writer.WriteImage(
@@ -163,12 +162,12 @@ namespace ImageProcessor.Helpers
 						
 						break;
 					case ".pgm":
-						if (!isGrayscale && !isBlackAndWhite)
-								image = Grayscale.Process(new GrayscaleModel
-								{
-									DefaultRoi = new RoiModel(image)
-								},
-								image);
+						//if (!isGrayscale && !isBlackAndWhite)
+						//		image = Grayscale.Process(new GrayscaleModel
+						//		{
+						//			DefaultRoi = new RoiModel(image)
+						//		},
+						//		image);
 
 						using (var stream = File.OpenWrite(savePath))
 							writer.WriteImage(

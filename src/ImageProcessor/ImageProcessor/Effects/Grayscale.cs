@@ -1,6 +1,4 @@
-﻿using System;
-using System.Drawing;
-using ImageProcessor.Models;
+﻿using ImageProcessor.Models;
 
 namespace ImageProcessor.Effects
 {
@@ -13,17 +11,13 @@ namespace ImageProcessor.Effects
 				return CommandsLineArg.Grayscale;
 			}
 		}
-		public override Bitmap Process(GrayscaleModel arg, Bitmap image)
+		public override RawImage Process(GrayscaleModel arg, RawImage image)
 		{
 			var roi = (arg.Roi ?? arg.DefaultRoi).Region;
 
 			for (var y = roi.Y; y < roi.Bottom; y++)
 				for (var x = roi.X; x < roi.Right; x++)
-				{
-					var color = Convert.ToInt32(255d * image.GetPixel(x, y).GetBrightness());
-
-					image.SetPixel(x, y, Color.FromArgb(color, color, color));
-				}
+					image.SetPixel(x, y, image.GetBrightness(x, y));
 
 			return image;
 		}

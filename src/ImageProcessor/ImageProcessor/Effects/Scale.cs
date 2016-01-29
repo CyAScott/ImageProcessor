@@ -40,33 +40,33 @@ namespace ImageProcessor.Effects
 				return CommandsLineArg.Scale;
 			}
 		}
-		public override Bitmap Process(ScaleModel arg, Bitmap image)
+		public override RawImage Process(ScaleModel arg, RawImage image)
 		{
 			var value = arg.Scale;
 			if (value.Equals(1d)) return image;
 
-			int height = Convert.ToInt32(image.Height * value),
-				width = Convert.ToInt32(image.Width * value),
+			int height = Convert.ToInt32(image.Size.Height * value),
+				width = Convert.ToInt32(image.Size.Width * value),
 				x, y;
 
 			var imagePixels = new ScalePixel[width, height];
-			var newImage = new Bitmap(width, height);
+			var newImage = new RawImage(width, height);
 			var xs = new HashSet<int>();
 			var ys = new HashSet<int>();
 
-			for (y = 0; y < image.Height; y++)
+			for (y = 0; y < image.Size.Height; y++)
 			{
 				var centerY = y * value;
 
 				var targetY = Convert.ToInt32(Math.Round(centerY, 0));
-				if (targetY >= newImage.Height) targetY = newImage.Height - 1;
+				if (targetY >= newImage.Size.Height) targetY = newImage.Size.Height - 1;
 
-				for (x = 0; x < image.Width; x++)
+				for (x = 0; x < image.Size.Width; x++)
 				{
 					var centerX = x * value;
 
 					var targetX = Convert.ToInt32(Math.Round(centerX, 0));
-					if (targetX >= newImage.Width) targetX = newImage.Width - 1;
+					if (targetX >= newImage.Size.Width) targetX = newImage.Size.Width - 1;
 
 					var pixel = image.GetPixel(x, y);
 
@@ -83,8 +83,8 @@ namespace ImageProcessor.Effects
 
 			var hasBlanks = false;
 
-			for (y = 0; y < newImage.Height; y++)
-				for (x = 0; x < newImage.Width; x++)
+			for (y = 0; y < newImage.Size.Height; y++)
+				for (x = 0; x < newImage.Size.Width; x++)
 				{
 					if (imagePixels[x, y].Count == 0)
 					{
@@ -109,8 +109,8 @@ namespace ImageProcessor.Effects
 				}
 
 			if (hasBlanks)
-				for (y = 0; y < newImage.Height; y++)
-					for (x = 0; x < newImage.Width; x++)
+				for (y = 0; y < newImage.Size.Height; y++)
+					for (x = 0; x < newImage.Size.Width; x++)
 						if (imagePixels[x, y].Count == 0)
 						{
 							int subx, suby;

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using ImageProcessor.Attributes;
+using ImageProcessor.Effects;
 using ImageProcessor.Models;
 using NLog;
 
@@ -39,7 +41,48 @@ namespace ImageProcessor.Helpers
 				})
 				.Where(arg => arg.Effect != null);
 		}
+		private void saveFile(List<CommandLineArgModel> args, effectInteration[] effects, RawImage image)
+		{
+			var output = args.First(arg => arg.Argument == CommandsLineArg.Output).Parameters.First();
+			var extention = (Path.GetExtension(output) ?? "").ToLower();
 
+			var isGrayscale = effects.Length > 0 && effects.Last().EffectParams.Argument == CommandsLineArg.Grayscale;
+			var isBlackAndWhite = effects.Length > 0 && effects.Last().EffectParams.Argument == CommandsLineArg.ThresholdFilter;
+
+			switch (extention)
+			{
+				case ".pbm":
+					if (!isBlackAndWhite)
+						image = ThresholdFilter.Process(new ThresholdFilterModel
+						{
+							DefaultRoi = new RoiModel(image)
+						},
+						image);
+
+					break;
+				case ".pgm":
+					if (!isGrayscale && !isBlackAndWhite)
+						image = Grayscale.Process(new GrayscaleModel
+						{
+							DefaultRoi = new RoiModel(image)
+						},
+						image);
+					break;
+			}
+
+			image.Save(output);
+		}
+
+		public IEffect<GrayscaleModel> Grayscale
+		{
+			get;
+			set;
+		}
+		public IEffect<ThresholdFilterModel> ThresholdFilter
+		{
+			get;
+			set;
+		}
 		public IEffectBase[] Effects
 		{
 			get;
@@ -63,9 +106,8 @@ namespace ImageProcessor.Helpers
 		public void Process(List<CommandLineArgModel> args)
 		{
 			var inputFile = args.First(arg => arg.Argument == CommandsLineArg.Input).Parameters.First();
-			Bitmap inputImage;
-			if (!ImageIo.TryParse(inputFile, out inputImage)) throw new ArgumentException("Unable to read the input image.");
-
+			var inputImage = new RawImage(inputFile);
+			
 			var effects = getEffectPipe(args).ToArray();
 
 			var currentImage = inputImage;
@@ -79,21 +121,14 @@ namespace ImageProcessor.Helpers
 				}
 
 				Log.Info("Processing: -{0} {1}", arg.EffectParams.Argument, String.Join(" ", arg.EffectParams.Parameters.Select(param => String.Format("\"{0}\"", param))));
-				Log.Info("Roi: " + roi.Region);
+				if (arg.EffectParams.ParsedModel is IRoiModel) Log.Info("Roi: " + roi.Region);
 
 				var nextImage = arg.Effect.ProcessInput(arg.EffectParams, currentImage);
-
-				if (!ReferenceEquals(currentImage, nextImage)) currentImage.Dispose();
 
 				currentImage = nextImage;
 			}
 
-			var output = args.First(arg => arg.Argument == CommandsLineArg.Output).Parameters.First();
-			ImageIo.SaveOutput(
-				currentImage, 
-				effects.Length > 0 && effects.Last().EffectParams.Argument == CommandsLineArg.Grayscale,
-				effects.Length > 0 && effects.Last().EffectParams.Argument == CommandsLineArg.ThresholdFilter,
-				output);
+			saveFile(args, effects, currentImage);
 		}
 	}
 }

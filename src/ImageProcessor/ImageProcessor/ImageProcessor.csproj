@@ -71,6 +71,7 @@
     <Compile Include="Installers\LogInstaller.cs" />
     <Compile Include="Models\CommandLineArgModel.cs" />
     <Compile Include="Models\CommandsLineArg.cs" />
+    <Compile Include="Models\RawImage.cs" />
     <Compile Include="Models\RoiModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -27,6 +27,10 @@ namespace ImageProcessor.Models
 		{
 			Region = new Rectangle(Point.Empty, image.Size);
 		}
+		public RoiModel(RawImage image)
+		{
+			Region = new Rectangle(Point.Empty, image.Size);
+		}
 		public Rectangle Region
 		{
 			get;

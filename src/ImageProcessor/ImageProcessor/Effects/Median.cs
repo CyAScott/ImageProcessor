@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ImageProcessor.Extensions;
 using ImageProcessor.Models;
 
 namespace ImageProcessor.Effects
@@ -16,29 +14,28 @@ namespace ImageProcessor.Effects
 				return CommandsLineArg.Median;
 			}
 		}
-		public override Bitmap Process(MedianModel arg, Bitmap image)
+		public override RawImage Process(MedianModel arg, RawImage image)
 		{
 			var roi = (arg.Roi ?? arg.DefaultRoi).Region;
 			var padding = (arg.Window - 1)/2;
 
-			Bitmap returnValue = null;
+			RawImage returnValue = null;
 
 			if (arg.Y)
 			{
-				returnValue = new Bitmap(image.Width, image.Height);
+				returnValue = new RawImage(image.Size.Width, image.Size.Height);
 				for (var x = roi.X; x < roi.Right; x++)
 					for (var y = roi.Y; y < roi.Bottom; y++)
-						returnValue.SetPixel(x, y, image.GetPixels(roi, x, y, padding, 1).Average());
-				image.Dispose();
+						returnValue.SetPixel(x, y, image.GetAverage(x, y - padding, 1, arg.Window, roi));
 				image = returnValue;
 			}
 
 			if (arg.X)
 			{
-				returnValue = new Bitmap(image.Width, image.Height);
+				returnValue = new RawImage(image.Size.Width, image.Size.Height);
 				for (var x = roi.X; x < roi.Right; x++)
 					for (var y = roi.Y; y < roi.Bottom; y++)
-						returnValue.SetPixel(x, y, image.GetPixels(roi, x, y, 1, padding).Average());
+						returnValue.SetPixel(x, y, image.GetAverage(x - padding, y, arg.Window, 1, roi));
 			}
 
 			return returnValue ?? image;

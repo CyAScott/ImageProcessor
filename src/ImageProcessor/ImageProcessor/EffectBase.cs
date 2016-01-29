@@ -1,11 +1,10 @@
-﻿using System.Drawing;
-using ImageProcessor.Models;
+﻿using ImageProcessor.Models;
 
 namespace ImageProcessor
 {
 	public interface IEffectBase
 	{
-		Bitmap ProcessInput(CommandLineArgModel arg, Bitmap image);
+		RawImage ProcessInput(CommandLineArgModel arg, RawImage image);
 		CommandsLineArg Argument
 		{
 			get;
@@ -15,13 +14,13 @@ namespace ImageProcessor
 	public interface IEffect<TModel> : IEffectBase
 		where TModel : class
 	{
-		Bitmap Process(TModel arg, Bitmap image);
+		RawImage Process(TModel arg, RawImage image);
 		TModel Parse(CommandLineArgModel arg);
 	}
 	public abstract class EffectBase<TModel> : IEffect<TModel>
 		where TModel : class
 	{
-		public Bitmap ProcessInput(CommandLineArgModel arg, Bitmap image)
+		public RawImage ProcessInput(CommandLineArgModel arg, RawImage image)
 		{
 			return Process((TModel)arg.ParsedModel, image);
 		}
@@ -29,7 +28,7 @@ namespace ImageProcessor
 		{
 			get;
 		}
-		public abstract Bitmap Process(TModel arg, Bitmap image);
+		public abstract RawImage Process(TModel arg, RawImage image);
 		public abstract TModel Parse(CommandLineArgModel arg);
 		public object ParseInput(CommandLineArgModel arg)
 		{

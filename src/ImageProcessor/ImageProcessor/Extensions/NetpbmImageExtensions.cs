@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using ImageProcessor.Models;
 using RavuAlHemio.PbmNet;
 
 namespace ImageProcessor.Extensions
@@ -55,6 +56,41 @@ namespace ImageProcessor.Extensions
 				bmp.Dispose();
 				throw;
 			}
+		}
+		public static RawImage ToRawImage<TPixelComponent>(this NetpbmImage<TPixelComponent> @this)
+		{
+			if (@this == null) return null;
+
+			var bmp = new RawImage(@this.Header.Width, @this.Header.Height);
+
+			var y = 0;
+			foreach (var row in @this.NativeRows.Select(row => row.ToArray()))
+			{
+				for (var x = 0; x < @this.Header.Width; x++)
+					switch (@this.Header.ImageType)
+					{
+						case ImageType.PBM:
+						case ImageType.PlainPBM:
+							bmp.SetPixel(x, y, (byte)(Convert.ToByte(row[x]) * 255));
+							break;
+						case ImageType.PGM:
+						case ImageType.PlainPGM:
+							bmp.SetPixel(x, y, Convert.ToByte(row[x]));
+							break;
+						case ImageType.PPM:
+						case ImageType.PlainPPM:
+							bmp.SetPixel(x, y,
+								Convert.ToByte(row[x * 3 + 0]),
+								Convert.ToByte(row[x * 3 + 1]),
+								Convert.ToByte(row[x * 3 + 2]));
+							break;
+						default:
+							throw new InvalidProgramException("Netpbm format not supported.");
+					}
+				y++;
+			}
+
+			return bmp;
 		}
 	}
 }

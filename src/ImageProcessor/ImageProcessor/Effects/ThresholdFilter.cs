@@ -15,18 +15,14 @@ namespace ImageProcessor.Effects
 				return CommandsLineArg.ThresholdFilter;
 			}
 		}
-		public override Bitmap Process(ThresholdFilterModel arg, Bitmap image)
+		public override RawImage Process(ThresholdFilterModel arg, RawImage image)
 		{
 			var roi = (arg.Roi ?? arg.DefaultRoi).Region;
-			var threshold = arg.Threshold;
+			var threshold = Convert.ToByte(arg.Threshold * 255);
 
 			for (var y = roi.Y; y < roi.Bottom; y++)
 				for (var x = roi.X; x < roi.Right; x++)
-				{
-					var brightness = 1d - image.GetPixel(x, y).GetBrightness();
-
-					image.SetPixel(x, y, brightness >= threshold ? Color.Black : Color.White);
-				}
+					image.SetPixel(x, y, image.ThresholdFilter(x, y, threshold));
 
 			return image;
 		}

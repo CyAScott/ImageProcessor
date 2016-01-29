@@ -1,12 +1,123 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
+using ImageProcessor.Extensions;
+using RavuAlHemio.PbmNet;
 
 namespace ImageProcessor.Models
 {
-	public class RawImage
+	public partial class RawImage
 	{
+		public static bool TryParse8BitPbm(string path, out RawImage image)
+		{
+			try
+			{
+				var reader = new NetpbmReader();
+
+				using (var stream = File.OpenRead(path))
+				{
+					var pbmImage = reader.ReadImage(stream, Image8Factory);
+
+					image = pbmImage.ToRawImage();
+				}
+
+				return true;
+			}
+			catch
+			{
+				image = null;
+				return false;
+			}
+		}
+		public static bool TryParse16BitPbm(string path, out RawImage image)
+		{
+			try
+			{
+				var reader = new NetpbmReader();
+
+				using (var stream = File.OpenRead(path))
+				{
+					var pbmImage = reader.ReadImage(stream, Image8Factory);
+
+					image = pbmImage.ToRawImage();
+				}
+
+				return true;
+			}
+			catch
+			{
+				image = null;
+				return false;
+			}
+		}
+		public static bool TryParse32BitPbm(string path, out RawImage image)
+		{
+			try
+			{
+				var reader = new NetpbmReader();
+
+				using (var stream = File.OpenRead(path))
+				{
+					var pbmImage = reader.ReadImage(stream, Image8Factory);
+
+					image = pbmImage.ToRawImage();
+				}
+
+				return true;
+			}
+			catch
+			{
+				image = null;
+				return false;
+			}
+		}
+		public static bool TryParse(string path, out RawImage image)
+		{
+			try
+			{
+				if (TryParse8BitPbm(path, out image) ||
+					TryParse16BitPbm(path, out image) ||
+					TryParse32BitPbm(path, out image))
+					return true;
+
+				using (var bmp = (Bitmap)Image.FromFile(path))
+					image = new RawImage(bmp);
+
+				return true;
+			}
+			catch
+			{
+				image = null;
+				return false;
+			}
+		}
+
+		public static readonly ImageFactories.Image8Factory Image8Factory = new ImageFactories.Image8Factory();
+		public static readonly ImageFactories.Image16Factory Image16Factory = new ImageFactories.Image16Factory();
+		public static readonly ImageFactories.Image32Factory Image32Factory = new ImageFactories.Image32Factory();
+	}
+	public partial class RawImage
+	{
+		private IEnumerable<IEnumerable<byte>> eachRow(bool useAllColorValues = true)
+		{
+			for (var row = 0; row < Size.Height; row++)
+				yield return eachColumn(row, useAllColorValues);
+		}
+		private IEnumerable<byte> eachColumn(int row, bool useAllColorValues = true)
+		{
+			for (var col = 0; col < rawBytes[row].Length; col += 4)
+			{
+				yield return rawBytes[row][col + 2];
+				if (useAllColorValues)
+				{
+					yield return rawBytes[row][col + 1];
+					yield return rawBytes[row][col];
+				}
+			}
+		}
 		private byte[][] rawBytes;
 		private byte getBrightness(int x, int y)
 		{
@@ -37,12 +148,9 @@ namespace ImageProcessor.Models
 
 			Size = image.Size;
 		}
-		
-		public RawImage(string file)
-		{
-			using (var image = Image.FromFile(file) as Bitmap)
-				parse(image);
-		}
+	}
+	public partial class RawImage
+	{
 		public RawImage(Bitmap image)
 		{
 			parse(image);
@@ -51,7 +159,7 @@ namespace ImageProcessor.Models
 		{
 			if (width < 0 || height < 0) throw new IndexOutOfRangeException("The width and height must be greater than or equal to zero.");
 
-			var rowLength = width*4;
+			var rowLength = width * 4;
 
 			rawBytes = new byte[height][];
 
@@ -60,11 +168,17 @@ namespace ImageProcessor.Models
 
 			Size = new Size(width, height);
 		}
-
-		public Size Size
+		public RawImage(string file)
 		{
-			get;
-			private set;
+			if (!File.Exists(file))
+				throw new FileNotFoundException("The image file does not exists.");
+
+			RawImage newImage;
+			if (!TryParse(file, out newImage))
+				throw new ArgumentException("The image file is not a valid format.");
+
+			rawBytes = newImage.rawBytes;
+			Size = newImage.Size;
 		}
 
 		public Bitmap ToBitmap()
@@ -76,6 +190,128 @@ namespace ImageProcessor.Models
 					returnValue.SetPixel(x / 4, y, Color.FromArgb(rawBytes[y][x + 3], rawBytes[y][x + 2], rawBytes[y][x + 1], rawBytes[y][x]));
 
 			return returnValue;
+		}
+
+		public void Save(string file)
+		{
+			var extention = (Path.GetExtension(file) ?? "").ToLower();
+			var writer = new NetpbmWriter();
+
+			switch (extention)
+			{
+				case ".pbm":
+					using (var stream = File.OpenWrite(file))
+						writer.WriteImage(
+							new NetpbmImage8(
+								new NetpbmHeader<byte>(
+									ImageType.PBM,
+									Size.Width,
+									Size.Height,
+									1,
+									new[] { Component.Black },
+									1), eachRow(false)),
+								stream,
+								ImageType.PlainPBM);
+
+					break;
+				case ".pgm":
+					using (var stream = File.OpenWrite(file))
+						writer.WriteImage(
+							new NetpbmImage8(
+								new NetpbmHeader<byte>(
+									ImageType.PBM,
+									Size.Width,
+									Size.Height,
+									1,
+									new[] { Component.Black },
+									255), eachRow(false)),
+								stream,
+								ImageType.PlainPGM);
+
+					break;
+				case ".ppm":
+					using (var stream = File.OpenWrite(file))
+						writer.WriteImage(
+							new NetpbmImage8(
+								new NetpbmHeader<byte>(
+									ImageType.PBM,
+									Size.Width,
+									Size.Height,
+									1,
+									new[] { Component.Red, Component.Green, Component.Blue },
+									255), eachRow()),
+								stream,
+								ImageType.PlainPPM);
+
+					break;
+				case ".bmp":
+					using (var image = ToBitmap())
+						image.Save(file, ImageFormat.Bmp);
+					break;
+				case ".gif":
+					using (var image = ToBitmap())
+						image.Save(file, ImageFormat.Gif);
+					break;
+				case ".ico":
+					using (var image = ToBitmap())
+						image.Save(file, ImageFormat.Icon);
+					break;
+				case ".jpeg":
+				case ".jpg":
+				case ".jif":
+				case ".jfif":
+					using (var image = ToBitmap())
+						image.Save(file, ImageFormat.Jpeg);
+					break;
+				case ".png":
+					using (var image = ToBitmap())
+						image.Save(file, ImageFormat.Png);
+					break;
+				case ".tif":
+				case ".tiff":
+					using (var image = ToBitmap())
+						image.Save(file, ImageFormat.Tiff);
+					break;
+				default:
+					using (var image = ToBitmap())
+						image.Save(file, ImageFormat.Png);
+					break;
+			}
+		}
+	}
+	public partial class RawImage
+	{
+		public Size Size
+		{
+			get;
+			private set;
+		}
+
+		public Color GetAverage(int x, int y, int width, int height, Rectangle roi)
+		{
+			long a = 0, r = 0, g = 0, b = 0;
+
+			var startX = Math.Max(x, roi.X);
+			var stopX = Math.Min(roi.Right, x + width);
+
+			var startY = Math.Max(y, roi.Y);
+			var stopY = Math.Min(roi.Bottom, y + height);
+
+			var count = (stopY - startY) * (stopX - startX);
+
+			startX *= 4;
+			stopX *= 4;
+
+			for (int xIndex, yIndex = startY; yIndex < stopY; yIndex++)
+				for (xIndex = startX; xIndex < stopX; xIndex += 4)
+				{
+					a += rawBytes[yIndex][xIndex + 3];
+					r += rawBytes[yIndex][xIndex + 2];
+					g += rawBytes[yIndex][xIndex + 1];
+					b += rawBytes[yIndex][xIndex];
+				}
+
+			return Color.FromArgb((byte)(a / count), (byte)(r / count), (byte)(g / count), (byte)(b / count));
 		}
 
 		public Color GetPixel(int x, int y)
@@ -91,8 +327,24 @@ namespace ImageProcessor.Models
 			rawBytes[y][x + 2] = color.R;
 			rawBytes[y][x + 3] = color.A;
 		}
+		public void SetPixel(int x, int y, byte color)
+		{
+			SetPixel(x, y, 255, color, color, color);
+		}
+		public void SetPixel(int x, int y, byte r, byte g, byte b)
+		{
+			SetPixel(x, y, 255, r, g, b);
+		}
+		public void SetPixel(int x, int y, byte a, byte r, byte g, byte b)
+		{
+			x *= 4;
+			rawBytes[y][x] = b;
+			rawBytes[y][x + 1] = g;
+			rawBytes[y][x + 2] = r;
+			rawBytes[y][x + 3] = a;
+		}
 
-		public float GetBrightness(int x, int y)
+		public byte GetBrightness(int x, int y)
 		{
 			return getBrightness(x * 4, y);
 		}
@@ -108,24 +360,9 @@ namespace ImageProcessor.Models
 			rawBytes[y][x + 2] = color;
 		}
 
-		public void ThresholdFilter(int x, int y, byte threshold)
+		public byte ThresholdFilter(int x, int y, byte threshold)
 		{
-			x *= 4;
-
-			if (getBrightness(x, y) >= threshold)
-			{
-				//black
-				rawBytes[y][x] = 0;
-				rawBytes[y][x + 1] = 0;
-				rawBytes[y][x + 2] = 0;
-			}
-			else
-			{
-				//white
-				rawBytes[y][x] = 255;
-				rawBytes[y][x + 1] = 255;
-				rawBytes[y][x + 2] = 255;
-			}
+			return getBrightness(x * 4, y) >= threshold ? (byte)255 : (byte)0;
 		}
 	}
 }
