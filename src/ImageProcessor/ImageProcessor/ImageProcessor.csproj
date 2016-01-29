@@ -65,7 +65,6 @@
     <Compile Include="Extensions\NetpbmImageExtensions.cs" />
     <Compile Include="Helpers\CommandArgumentsHelper.cs" />
     <Compile Include="Helpers\EffectPipe.cs" />
-    <Compile Include="Helpers\ImageIo.cs" />
     <Compile Include="Installers\EffectsInstaller.cs" />
     <Compile Include="Installers\HelperInstaller.cs" />
     <Compile Include="Installers\LogInstaller.cs" />
