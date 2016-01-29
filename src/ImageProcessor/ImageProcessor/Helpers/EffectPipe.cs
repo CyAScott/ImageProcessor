@@ -90,11 +90,6 @@ namespace ImageProcessor.Helpers
 			get;
 			set;
 		}
-		public IImageIo ImageIo
-		{
-			get;
-			set;
-		}
 		public ILogger Log
 		{
 			get;
