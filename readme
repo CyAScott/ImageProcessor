@@ -1,0 +1,150 @@
+Quick Example--------------------------------------------------------------------------------------
+
+An example of how to use the command line tool is:
+
+	ImageProcessor.exe -Input baboon.pgm -Output baboon.jpg
+
+The example above will convert baboon.pgm to baboon.jpg. The '-Input' and '-Output' arguments are 
+required for the program to run correctly.
+
+Some Basics-----------------------------------------------------------------------------------------
+
+The general format for arguments is:
+
+	-Input <input file path> ... {pipe line arguments and parameters} ... -Output <output file path>
+
+Where is the relative path to the input file, {pipe line arguments and parameters} is a series of 
+arguments with parameters which tells the program what effects to apply to the image, and is the 
+relative path to save the rendered file. The order of the {pipe line arguments and parameters} does 
+matter. Some arguments require additional parameters proceeding the argument (i.e. -Input 
+baboon.pgm) while others do not (i.e. -Help).
+
+Pipe Line Arguments and Parameters (Effects)--------------------------------------------------------
+
+You can apply as many effects on an image as you want. The order in which those effects are applied 
+to the image depends on the order the argument plus its parameters was given to the program. For 
+example:
+
+This applies the median filter first, then the threshold filter:
+	ImageProcessor.exe -Input baboon.pgm -Median -ThresholdFilter -Output baboon.jpg
+
+This applies the threshold filter first, then the median filter:
+	ImageProcessor.exe -Input baboon.pgm -Median -ThresholdFilter -Output baboon.jpg
+
+Examples--------------------------------------------------------------------------------------------
+
+Converts the image to gray scale:
+	ImageProcessor.exe -Input baboon.pgm -Grayscale -Output baboon.jpg
+
+Scales the image to twice the original size:
+	ImageProcessor.exe -Input baboon.pgm -Scale 2.0 -Output baboon.jpg
+
+Scales the image to half the original size:
+	ImageProcessor.exe -Input baboon.pgm -Scale 0.5 -Output baboon.jpg
+
+Makes a black and white image (no gray values) where the 'brightness' of the color is calculated to 
+a value of 0 to 1 and the threshold value will mark the resulting pixel either black or white based 
+on that number:
+	ImageProcessor.exe -Input baboon.pgm -ThresholdFilter 0.5 -Output baboon.jpg
+
+All Arguments---------------------------------------------------------------------------------------
+
+-Help: Optional
+
+    Will list all possible command line arguments and their descriptions.
+-Input: Required
+
+    The Input argument is used to tell the program where the read the input
+    file. Multiple arguments of this type are not allowed. The argument
+    requires exactly 1 paramter(s).
+
+    Argument Parameter(s):
+            Format: <string>
+            Optional: False
+            Description:
+                    The relative path to the file.
+-Output: Required
+
+    The Output argument is used to tell the program where to write the output
+    file. If the file already exists then it will be over written. Multiple
+    arguments of this type are not allowed. The argument requires exactly 1
+    paramter(s).
+
+    Argument Parameter(s):
+            Format: <string>
+            Optional: False
+            Description:
+                    The relative path to the file.
+-Scale: Optional
+
+    The Scale argument is used to scale an image.  The number parameter repsents
+    percentage to increase or decrease the image by (1.0 = 100% or no scaling).
+    This parameter is not optional.
+
+    Argument Parameter(s):
+            Format: <double>
+            Optional: False
+            Description:
+                    Must be a value greater than or equal to zero. Values below 1.0 will
+                    shrink the image and values above 1.0 will increase the image size. If
+                    the value is 1.0 then the image will not be altered.
+-ThresholdFilter: Optional
+
+    The ThresholdFilter argument is used to convert the image into a set of
+    black or white pixels or color binarization. The 'brightness' of each pixel
+    will be calculated into a value between 0 and 1 (where 0 is white and 1 is
+    black).
+
+    Argument Parameter(s):
+            Format: threshold:<double>
+            Optional: True
+            Description:
+                    If the brightness of the pixel is greater than or equal to this value then
+                    the resulting pixel will be white else it will be black. The default
+                    value is 0.5.
+
+            Format: roi:<x>,<y>,<width>,<height>
+            Optional: True
+            Description:
+                    Applies the effect to a target section of the image. The default value is
+                    the whole image.
+-Grayscale: Optional
+
+    Converts the image into colors ranging between black and white (all gray
+    colors).
+
+    Argument Parameter(s):
+            Format: roi:<x>,<y>,<width>,<height>
+            Optional: True
+            Description:
+                    Applies the effect to a target section of the image. The default value is
+                    the whole image.
+-Median: Optional
+
+    Applies an uniform smoothing filter to an image using the median method.
+
+    Argument Parameter(s):
+            Format: x:<boolean>
+            Optional: True
+            Description:
+                    Applies the effect only in the left and right directions. The default
+                    value is false.
+
+            Format: roi:<x>,<y>,<width>,<height>
+            Optional: True
+            Description:
+                    Applies the effect to a target section of the image. The default value is
+                    the whole image.
+
+            Format: y:<boolean>
+            Optional: True
+            Description:
+                    Applies the effect only in the up and down directions. The default value
+                    is false.
+
+            Format: window:<integer>
+            Optional: True
+            Description:
+                    When calculating the resulting pixel, a window surrounding the target
+                    pixel is used for the calculation. This value must be a positive odd
+                    integer. The default value is 3.
