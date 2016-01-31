@@ -55,7 +55,9 @@
   <ItemGroup>
     <Compile Include="Attributes\LoggerNameAttribute.cs" />
     <Compile Include="Attributes\OnlyOneAttribute.cs" />
+    <Compile Include="Attributes\ParamterAttribute.cs" />
     <Compile Include="Attributes\RegexAttribute.cs" />
+    <Compile Include="Attributes\RoiParamterAttribute.cs" />
     <Compile Include="EffectBase.cs" />
     <Compile Include="Effects\Grayscale.cs" />
     <Compile Include="Effects\Median.cs" />
@@ -63,6 +65,7 @@
     <Compile Include="Effects\ThresholdFilter.cs" />
     <Compile Include="Extensions\ImageExtensions.cs" />
     <Compile Include="Extensions\NetpbmImageExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\CommandArgumentsHelper.cs" />
     <Compile Include="Helpers\EffectPipe.cs" />
     <Compile Include="Installers\EffectsInstaller.cs" />
