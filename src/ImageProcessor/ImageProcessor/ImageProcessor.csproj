@@ -59,10 +59,10 @@
     <Compile Include="Attributes\RegexAttribute.cs" />
     <Compile Include="Attributes\RoiParamterAttribute.cs" />
     <Compile Include="EffectBase.cs" />
-    <Compile Include="Effects\Grayscale.cs" />
-    <Compile Include="Effects\Median.cs" />
-    <Compile Include="Effects\Scale.cs" />
-    <Compile Include="Effects\ThresholdFilter.cs" />
+    <Compile Include="Filters\Grayscale.cs" />
+    <Compile Include="Filters\Median.cs" />
+    <Compile Include="Filters\Scale.cs" />
+    <Compile Include="Filters\ThresholdFilter.cs" />
     <Compile Include="Extensions\ImageExtensions.cs" />
     <Compile Include="Extensions\NetpbmImageExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />

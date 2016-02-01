@@ -1,8 +1,8 @@
 ﻿using ImageProcessor.Models;
 
-namespace ImageProcessor.Effects
+namespace ImageProcessor.Filters
 {
-	public class Grayscale : EffectBase<GrayscaleModel>
+	public class Grayscale : FilterBase<GrayscaleModel>
 	{
 		public override CommandsLineArg Argument
 		{

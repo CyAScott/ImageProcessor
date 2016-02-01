@@ -3,50 +3,50 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ImageProcessor.Attributes;
-using ImageProcessor.Effects;
+using ImageProcessor.Filters;
 using ImageProcessor.Models;
 using NLog;
 
 namespace ImageProcessor.Helpers
 {
-	public interface IEffectPipe
+	public interface IFilterPipe
 	{
 		void ParseArguments(List<CommandLineArgModel> args);
 		void Process(List<CommandLineArgModel> args);
 	}
-	[LoggerName("Effect Pipe")]
-	public class EffectPipe : IEffectPipe
+	[LoggerName("Filter Pipe")]
+	public class FilterPipe : IFilterPipe
 	{
-		private class effectInteration
+		private class filterIteration
 		{
-			public CommandLineArgModel EffectParams
+			public CommandLineArgModel FilterParams
 			{
 				get;
 				set;
 			}
-			public IEffectBase Effect
+			public IFilterBase Filter
 			{
 				get;
 				set;
 			}
 		}
-		private IEnumerable<effectInteration> getEffectPipe(IEnumerable<CommandLineArgModel> args)
+		private IEnumerable<filterIteration> getFilterPipe(IEnumerable<CommandLineArgModel> args)
 		{
 			return args
-				.Select(arg => new effectInteration
+				.Select(arg => new filterIteration
 				{
-					Effect = Effects.FirstOrDefault(effect => effect.Argument == arg.Argument),
-					EffectParams = arg
+					Filter = Filters.FirstOrDefault(filter => filter.Argument == arg.Argument),
+					FilterParams = arg
 				})
-				.Where(arg => arg.Effect != null);
+				.Where(arg => arg.Filter != null);
 		}
-		private void saveFile(List<CommandLineArgModel> args, effectInteration[] effects, RawImage image)
+		private void saveFile(List<CommandLineArgModel> args, filterIteration[] filters, RawImage image)
 		{
 			var output = args.First(arg => arg.Argument == CommandsLineArg.Output).Parameters.First();
 			var extention = (Path.GetExtension(output) ?? "").ToLower();
 
-			var isGrayscale = effects.Length > 0 && effects.Last().EffectParams.Argument == CommandsLineArg.Grayscale;
-			var isBlackAndWhite = effects.Length > 0 && effects.Last().EffectParams.Argument == CommandsLineArg.ThresholdFilter;
+			var isGrayscale = filters.Length > 0 && filters.Last().FilterParams.Argument == CommandsLineArg.Grayscale;
+			var isBlackAndWhite = filters.Length > 0 && filters.Last().FilterParams.Argument == CommandsLineArg.ThresholdFilter;
 
 			switch (extention)
 			{
@@ -75,17 +75,17 @@ namespace ImageProcessor.Helpers
 			image.Save(output);
 		}
 
-		public IEffect<GrayscaleModel> Grayscale
+		public IFilter<GrayscaleModel> Grayscale
 		{
 			get;
 			set;
 		}
-		public IEffect<ThresholdFilterModel> ThresholdFilter
+		public IFilter<ThresholdFilterModel> ThresholdFilter
 		{
 			get;
 			set;
 		}
-		public IEffectBase[] Effects
+		public IFilterBase[] Filters
 		{
 			get;
 			set;
@@ -97,35 +97,35 @@ namespace ImageProcessor.Helpers
 		}
 		public void ParseArguments(List<CommandLineArgModel> args)
 		{
-			foreach (var arg in getEffectPipe(args))
-				arg.EffectParams.ParsedModel = arg.Effect.ParseInput(arg.EffectParams);
+			foreach (var arg in getFilterPipe(args))
+				arg.FilterParams.ParsedModel = arg.Filter.ParseInput(arg.FilterParams);
 		}
 		public void Process(List<CommandLineArgModel> args)
 		{
 			var inputFile = args.First(arg => arg.Argument == CommandsLineArg.Input).Parameters.First();
 			var inputImage = new RawImage(inputFile);
 			
-			var effects = getEffectPipe(args).ToArray();
+			var filters = getFilterPipe(args).ToArray();
 
 			var currentImage = inputImage;
-			foreach (var arg in effects)
+			foreach (var arg in filters)
 			{
 				var roi = new RoiModel(currentImage);
-				if (arg.EffectParams.ParsedModel is IRoiModel)
+				if (arg.FilterParams.ParsedModel is IRoiModel)
 				{
-					(arg.EffectParams.ParsedModel as IRoiModel).DefaultRoi = roi;
-					roi = (arg.EffectParams.ParsedModel as IRoiModel).Roi ?? roi;
+					(arg.FilterParams.ParsedModel as IRoiModel).DefaultRoi = roi;
+					roi = (arg.FilterParams.ParsedModel as IRoiModel).Roi ?? roi;
 				}
 
-				Log.Info("Processing: -{0} {1}", arg.EffectParams.Argument, String.Join(" ", arg.EffectParams.Parameters.Select(param => String.Format("\"{0}\"", param))));
-				if (arg.EffectParams.ParsedModel is IRoiModel) Log.Info("Roi: " + roi.Region);
+				Log.Info("Processing: -{0} {1}", arg.FilterParams.Argument, String.Join(" ", arg.FilterParams.Parameters.Select(param => String.Format("\"{0}\"", param))));
+				if (arg.FilterParams.ParsedModel is IRoiModel) Log.Info("Roi: " + roi.Region);
 
-				var nextImage = arg.Effect.ProcessInput(arg.EffectParams, currentImage);
+				var nextImage = arg.Filter.ProcessInput(arg.FilterParams, currentImage);
 
 				currentImage = nextImage;
 			}
 
-			saveFile(args, effects, currentImage);
+			saveFile(args, filters, currentImage);
 		}
 	}
 }

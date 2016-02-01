@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using ImageProcessor.Models;
 
-namespace ImageProcessor.Effects
+namespace ImageProcessor.Filters
 {
-	public class ThresholdFilter : EffectBase<ThresholdFilterModel>
+	public class ThresholdFilter : FilterBase<ThresholdFilterModel>
 	{
 		public override CommandsLineArg Argument
 		{

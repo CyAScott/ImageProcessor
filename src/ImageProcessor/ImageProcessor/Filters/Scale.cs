@@ -3,9 +3,9 @@ using System.Drawing;
 using System.Linq;
 using ImageProcessor.Models;
 
-namespace ImageProcessor.Effects
+namespace ImageProcessor.Filters
 {
-	public class Scale : EffectBase<ScaleModel>
+	public class Scale : FilterBase<ScaleModel>
 	{
 		private RawImage scaleDown(double scale, RawImage image)
 		{
@@ -57,7 +57,7 @@ namespace ImageProcessor.Effects
 				returnValue);
 		}
 
-		public IEffect<MedianModel> Median
+		public IFilter<MedianModel> Median
 		{
 			get;
 			set;

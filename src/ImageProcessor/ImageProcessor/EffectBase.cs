@@ -2,7 +2,7 @@
 
 namespace ImageProcessor
 {
-	public interface IEffectBase
+	public interface IFilterBase
 	{
 		RawImage ProcessInput(CommandLineArgModel arg, RawImage image);
 		CommandsLineArg Argument
@@ -11,13 +11,13 @@ namespace ImageProcessor
 		}
 		object ParseInput(CommandLineArgModel arg);
 	}
-	public interface IEffect<TModel> : IEffectBase
+	public interface IFilter<TModel> : IFilterBase
 		where TModel : class
 	{
 		RawImage Process(TModel arg, RawImage image);
 		TModel Parse(CommandLineArgModel arg);
 	}
-	public abstract class EffectBase<TModel> : IEffect<TModel>
+	public abstract class FilterBase<TModel> : IFilter<TModel>
 		where TModel : class
 	{
 		public RawImage ProcessInput(CommandLineArgModel arg, RawImage image)

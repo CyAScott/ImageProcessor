@@ -4,19 +4,19 @@ using Castle.Windsor;
 
 namespace ImageProcessor.Installers
 {
-	public class EffectsInstaller : IWindsorInstaller
+	public class FiltersInstaller : IWindsorInstaller
 	{
 		public void Install(IWindsorContainer container, IConfigurationStore store)
 		{
 			container.Register(Classes
 				.FromThisAssembly()
-				.InNamespace("ImageProcessor.Effects")
+				.InNamespace("ImageProcessor.Filters")
 				.WithServiceAllInterfaces()
 				.LifestyleSingleton());
 
 			container.Register(Component
-				.For<IEffectBase[]>()
-				.Instance(container.ResolveAll<IEffectBase>())
+				.For<IFilterBase[]>()
+				.Instance(container.ResolveAll<IFilterBase>())
 				.LifestyleSingleton());
 		}
 	}

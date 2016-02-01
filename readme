@@ -14,14 +14,13 @@ The general format for arguments is:
 	-Input <input file path> ... {pipe line arguments and parameters} ... -Output <output file path>
 
 Where is the relative path to the input file, {pipe line arguments and parameters} is a series of 
-arguments with parameters which tells the program what effects to apply to the image, and is the 
-relative path to save the rendered file. The order of the {pipe line arguments and parameters} does 
-matter. Some arguments require additional parameters proceeding the argument (i.e. -Input 
-baboon.pgm) while others do not (i.e. -Help).
+arguments with parameters which tells the program what filters to apply to the image. The order of 
+the {pipe line arguments and parameters} does matter. Some arguments require additional parameters 
+proceeding the argument (i.e. -Input baboon.pgm) while others do not (i.e. -Help).
 
-Pipe Line Arguments and Parameters (Effects)--------------------------------------------------------
+Pipe Line Arguments and Parameters (Filters)--------------------------------------------------------
 
-You can apply as many effects on an image as you want. The order in which those effects are applied 
+You can apply as many filters on an image as you want. The order in which those filters are applied 
 to the image depends on the order the argument plus its parameters was given to the program. For 
 example:
 
@@ -106,7 +105,7 @@ All Arguments-------------------------------------------------------------------
             Format: roi:<x>,<y>,<width>,<height>
             Optional: True
             Description:
-                    Applies the effect to a target section of the image. The default value is
+                    Applies the filter to a target section of the image. The default value is
                     the whole image.
 -Grayscale: Optional
 
@@ -117,7 +116,7 @@ All Arguments-------------------------------------------------------------------
             Format: roi:<x>,<y>,<width>,<height>
             Optional: True
             Description:
-                    Applies the effect to a target section of the image. The default value is
+                    Applies the filter to a target section of the image. The default value is
                     the whole image.
 -Median: Optional
 
@@ -127,19 +126,19 @@ All Arguments-------------------------------------------------------------------
             Format: x:<boolean>
             Optional: True
             Description:
-                    Applies the effect only in the left and right directions. The default
+                    Applies the filter only in the left and right directions. The default
                     value is false.
 
             Format: roi:<x>,<y>,<width>,<height>
             Optional: True
             Description:
-                    Applies the effect to a target section of the image. The default value is
+                    Applies the filter to a target section of the image. The default value is
                     the whole image.
 
             Format: y:<boolean>
             Optional: True
             Description:
-                    Applies the effect only in the up and down directions. The default value
+                    Applies the filter only in the up and down directions. The default value
                     is false.
 
             Format: window:<integer>

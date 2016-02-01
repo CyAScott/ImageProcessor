@@ -3,9 +3,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using ImageProcessor.Models;
 
-namespace ImageProcessor.Effects
+namespace ImageProcessor.Filters
 {
-	public class Median : EffectBase<MedianModel>
+	public class Median : FilterBase<MedianModel>
 	{
 		public override CommandsLineArg Argument
 		{
@@ -27,7 +27,8 @@ namespace ImageProcessor.Effects
 			{
 				if (arg.Y)
 				{
-					returnValue = new RawImage(image.Size.Width, image.Size.Height);
+					returnValue = image.Clone();
+
 					for (var x = roi.X; x < roi.Right; x++)
 						for (var y = roi.Y; y < roi.Bottom; y++)
 							returnValue.SetPixel(x, y, image.GetAverage(x, y - padding, 1, arg.Window, roi));
@@ -36,7 +37,7 @@ namespace ImageProcessor.Effects
 
 				if (arg.X)
 				{
-					returnValue = new RawImage(image.Size.Width, image.Size.Height);
+					returnValue = image.Clone();
 					for (var x = roi.X; x < roi.Right; x++)
 						for (var y = roi.Y; y < roi.Bottom; y++)
 							returnValue.SetPixel(x, y, image.GetAverage(x - padding, y, arg.Window, 1, roi));
@@ -64,7 +65,7 @@ namespace ImageProcessor.Effects
 					.FirstOrDefault() ?? true
 			};
 
-			if (returnValue.Window % 2 != 1) throw new ArgumentException("The Window parameter for the Median effect most be an odd integer.");
+			if (returnValue.Window % 2 != 1) throw new ArgumentException("The Window parameter for the Median filter most be an odd integer.");
 
 			return returnValue;
 		}

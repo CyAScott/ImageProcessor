@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using ImageProcessor.Attributes;
-using ImageProcessor.Effects;
+using ImageProcessor.Filters;
 
 namespace ImageProcessor.Models
 {
@@ -58,17 +58,17 @@ namespace ImageProcessor.Models
 
 		[Description("Applies an uniform smoothing filter to an image using the median method.")]
 		[Paramter("x:<boolean>", Description = 
-			"Applies the effect only in the left and right directions. " +
+			"Applies the filter only in the left and right directions. " +
 			"The default value is false.")]
 		[Paramter("y:<boolean>", Description = 
-			"Applies the effect only in the up and down directions. " +
+			"Applies the filter only in the up and down directions. " +
 			"The default value is false.")]
 		[Paramter("window:<integer>", Description = 
 			"When calculating the resulting pixel, a window surrounding the target pixel is used for the calculation. " +
 			"This value must be a positive odd integer. " +
 			"The default value is 3.")]
 		[RoiParamter]
-		[Range(0, 2, ErrorMessage = "The -Median argument requires at most four parameters (i.e. -Median roi:0,0,10,10 window:3 x:true y:false).")]
+		[Range(0, 4, ErrorMessage = "The -Median argument requires at most four parameters (i.e. -Median roi:0,0,10,10 window:3 x:true y:false).")]
 		[Regex("(" + RoiModel.RoiPattern + "|" + MedianModel.WindowPattern + "|" + MedianModel.XPattern + "|" + MedianModel.YPattern + ")")]
 		Median,
 	}

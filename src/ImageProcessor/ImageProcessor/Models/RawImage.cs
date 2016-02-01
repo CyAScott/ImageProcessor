@@ -192,6 +192,15 @@ namespace ImageProcessor.Models
 
 			return returnValue;
 		}
+		public RawImage Clone()
+		{
+			var returnValue = new RawImage(Size.Width, Size.Height);
+
+			for (var row = 0; row < rawBytes.Length; row++)
+				Buffer.BlockCopy(rawBytes[row], 0, returnValue.rawBytes[row], 0, rawBytes[row].Length);
+
+			return returnValue;
+		}
 
 		public void Save(string file)
 		{

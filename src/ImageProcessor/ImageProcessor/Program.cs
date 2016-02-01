@@ -27,8 +27,6 @@ namespace ImageProcessor
 			{
 				log.Error(error, error.Message);
 			}
-			log.Info("Press the enter key to exit.");
-			Console.ReadLine();
 		}
 	}
 }

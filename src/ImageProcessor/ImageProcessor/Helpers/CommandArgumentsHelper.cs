@@ -86,7 +86,7 @@ namespace ImageProcessor.Helpers
 
 				documentation.AppendAndWrap(
 					"Pipe line arguments are arguments where the order does matter. " +
-					"Each pipe line argument applies an effect on the image and applies it in the order in which is was sent to the program. " +
+					"Each pipe line argument applies an filter on the image and applies it in the order in which is was sent to the program. " +
 					"The format for an argument and paramters is:", documentationWidth, "\t");
 				documentation.AppendLine();
 				documentation.AppendAndWrap("-{Argument} {Paramter 1} {Paramter 2} ... {Paramter N}", documentationWidth, "\t\t");
@@ -179,7 +179,7 @@ namespace ImageProcessor.Helpers
 			return true;
 		}
 
-		public IEffectPipe EffectPipe
+		public IFilterPipe FilterPipe
 		{
 			get;
 			set;
@@ -197,9 +197,9 @@ namespace ImageProcessor.Helpers
 			
 			if (!validate(arguments)) return;
 
-			EffectPipe.ParseArguments(arguments);
+			FilterPipe.ParseArguments(arguments);
 
-			EffectPipe.Process(arguments);
+			FilterPipe.Process(arguments);
 		}
 	}
 }
