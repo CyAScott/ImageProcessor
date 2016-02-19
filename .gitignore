@@ -196,3 +196,5 @@ FakesAssemblies/
 *.opt
 *.nuspec
 *.msi
+*.pnws
+src/ImageProcessor/ImageProcessorCpp/ImageProcessorCpp.vcxproj.filters
