@@ -2,7 +2,7 @@
 
 int indexOf(vector<int> source, int value)
 {
-	for (int i = 0; i < source.size(); i++)
+	for (unsigned int i = 0; i < source.size(); i++)
 	{
 		if (source.at(i) == value)
 		{
@@ -14,7 +14,7 @@ int indexOf(vector<int> source, int value)
 
 int lastIndexOf(vector<int> source, int value)
 {
-	for (int i = source.size() - 1; i >= 0; i--)
+	for (unsigned int i = source.size() - 1; i >= 0; i--)
 	{
 		if (source.at(i) == value)
 		{

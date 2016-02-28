@@ -9,7 +9,7 @@ RawImage* GrayHistogramEqualization::ProcessInput(CommandLineArgModel* arg, RawI
 	double cumulativeProbabilityValue = 0.0, 
 		totalNumberOfPixels = roi.Height * roi.Width;
 	
-	for (int i = 0; i < histogram.size(); i++)
+	for (unsigned int i = 0; i < histogram.size(); i++)
 	{
 		double probability = (double)histogram.at(i) / totalNumberOfPixels;
 		cumulativeProbabilityValue += probability;

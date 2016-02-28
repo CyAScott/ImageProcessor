@@ -7,7 +7,7 @@ RawImage* GrayHistogram::ProcessInput(CommandLineArgModel* arg, RawImage* image)
 	vector<int> histogram = image->GetHistogram(roi).I;
 	double maxCount = 255.0;
 
-	for (int i = 0; i < histogram.size(); i++)
+	for (unsigned int i = 0; i < histogram.size(); i++)
 		if (histogram.at(i) > maxCount)
 			maxCount = histogram.at(i);
 
