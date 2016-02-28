@@ -9,8 +9,8 @@
 
 int main(int argc, char* argv[])
 {
-	try
-	{
+	/*try
+	{*/
 		cout << "Starting image processor.\n\n";
 
 		vector<CommandLineArgModel*> args = parse(argc, argv);
@@ -73,10 +73,10 @@ int main(int argc, char* argv[])
 		remove(outputTemp.c_str());
 
 		return EXIT_SUCCESS;
-	}
+	/*}
 	catch (...)
 	{
 		cout << "\n";
 		return EXIT_FAILURE;
-	}
+	}*/
 }
