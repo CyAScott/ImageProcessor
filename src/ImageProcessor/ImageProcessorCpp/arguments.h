@@ -528,5 +528,6 @@ ArgAttribute const ArgAttributes[] =
 
 vector<CommandLineArgModel*> parse(unsigned int argc, char* argv[]);
 bool validate(vector<CommandLineArgModel*> args);
+void testRegExPatterns();
 
 #endif

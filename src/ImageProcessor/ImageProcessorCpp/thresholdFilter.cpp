@@ -38,7 +38,7 @@ void ThresholdFilter::ParseArgument(CommandLineArgModel* arg)
 
 		if (!hasThreshold)
 		{
-			string value = getParamValue("\\s*threshold\\s*", arg->Parameters->at(index));
+			string value = getParamValue("threshold", arg->Parameters->at(index));
 
 			if (value.length())
 			{

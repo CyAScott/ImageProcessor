@@ -215,34 +215,34 @@ void HsiHistogramEqualization::ParseArgument(CommandLineArgModel* arg)
 
 		if (!hasH)
 		{
-			string value = getParamValue("\\s*h\\s*", arg->Parameters->at(index));
+			string value = getParamValue("h", arg->Parameters->at(index));
 
 			if (value.length())
 			{
 				hasH = true;
-				model->H = regex_match(value, regex("\\s*true\\s*"));
+				model->H = isMatch(value, "true");
 			}
 		}
 
 		if (!hasS)
 		{
-			string value = getParamValue("\\s*s\\s*", arg->Parameters->at(index));
+			string value = getParamValue("s", arg->Parameters->at(index));
 
 			if (value.length())
 			{
 				hasS = true;
-				model->S = regex_match(value, regex("\\s*true\\s*"));
+				model->S = isMatch(value, "true");
 			}
 		}
 
 		if (!hasI)
 		{
-			string value = getParamValue("\\s*i\\s*", arg->Parameters->at(index));
+			string value = getParamValue("i", arg->Parameters->at(index));
 
 			if (value.length())
 			{
 				hasI = true;
-				model->I = regex_match(value, regex("\\s*true\\s*"));
+				model->I = isMatch(value, "true");
 			}
 		}
 	}

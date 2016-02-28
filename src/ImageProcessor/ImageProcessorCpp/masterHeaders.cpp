@@ -20,7 +20,7 @@ Rectangle fromSize(Size size)
 }
 Rectangle parseRoi(string param)
 {
-	string value = getParamValue("\\s*roi\\s*", param);
+	string value = getParamValue("roi", param);
 
 	if (value.length())
 	{
@@ -57,7 +57,7 @@ string getParamValue(string paramName, string param)
 {
 	vector<string> values = splitParam(param);
 
-	return values.size() == 2 && regex_match(values.at(0), regex(paramName)) ? values.at(1) : "";
+	return values.size() == 2 && isMatch(values.at(0), paramName) ? values.at(1) : "";
 }
 
 string toLowerString(string s)
@@ -74,11 +74,11 @@ string toLowerString(string s)
 
 string trim(string str)
 {
-	while (str.length() && regex_match(str.substr(str.length() - 1, 1), regex("\\s")))
+	while (str.length() && isWhiteSpace(str[str.length() - 1]))
 	{
 		str = str.substr(0, str.length() - 1);
 	}
-	while (str.length() && regex_match(str.substr(0, 1), regex("\\s")))
+	while (str.length() && isWhiteSpace(str[0]))
 	{
 		str = str.substr(1);
 	}
@@ -102,6 +102,21 @@ vector<string> splitParam(string param)
 	return returnValue;
 }
 
+bool endsWith(string str, string end)
+{
+	if (str.length() < end.length()) return false;
+
+	for (unsigned int e = end.length() - 1, s = str.length() - 1; e >= 0 && s >= 0; e--, s--)
+	{
+		if (toupper(str[s]) != toupper(end[e]))
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 bool isMatch(string a, string b)
 {
 	if (a.length() != b.length()) return false;
@@ -117,35 +132,20 @@ bool isMatch(string a, string b)
 	return true;
 }
 
+bool isWhiteSpace(char c)
+{
+	return
+		c == ' ' ||
+		c == '\t' ||
+		c == '\r' ||
+		c == '\n' ||
+		c == '\v' ||
+		c == '\f';
+}
+
 bool fileExists(const string& path)
 {
 	return ifstream(path) ? true : false;
-}
-
-bool readLine(ifstream& stream, vector<string>& line)
-{
-	string cell, wholeLine;
-	while (getline(stream, wholeLine))
-	{
-		if (wholeLine.length() && !regex_match(wholeLine, regex("^\\s*#.*$")))
-		{
-			stringstream ss(wholeLine);
-			
-			line.clear();
-
-			while (getline(ss, cell, ' '))
-			{
-				if (cell.length())
-				{
-					line.push_back(cell);
-				}
-			}
-
-			return true;
-		}
-	}
-
-	return false;
 }
 
 void appendAndWrap(string* builder, string text, unsigned int width)

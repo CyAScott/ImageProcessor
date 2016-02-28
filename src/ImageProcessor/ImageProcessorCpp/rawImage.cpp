@@ -34,7 +34,9 @@ RawImage::RawImage(string path)
 
 	while (getline(file, wholeLine))
 	{
-		if (wholeLine.length() && !regex_match(wholeLine, regex("^\\s*#.*$")))
+		wholeLine = trim(wholeLine);
+
+		if (wholeLine.length() && wholeLine[0] != '#')
 		{
 			stringstream ss(wholeLine);
 
@@ -42,6 +44,7 @@ RawImage::RawImage(string path)
 
 			while (getline(ss, cell, ' '))
 			{
+				cell = trim(cell);
 				if (cell.length())
 				{
 					line.push_back(cell);
@@ -57,17 +60,22 @@ RawImage::RawImage(string path)
 
 				string wholeLine = line.at(0);
 
-				if (regex_match(wholeLine, regex("^\\s*P(1|4)\\s*$")))
+				if (wholeLine.length() != 2 || toupper(wholeLine[0]) != 'P')
+				{
+					throw runtime_error("Unknown photo format.");
+				}
+
+				if (wholeLine[1] == '1' || wholeLine[1] == '4')
 				{
 					format = PBM_P1;
 					repeatCellBy = 3;
 				}
-				else if (regex_match(wholeLine, regex("^\\s*P(2|5)\\s*$")))
+				else if (wholeLine[1] == '2' || wholeLine[1] == '5')
 				{
 					format = PBM_P2;
 					repeatCellBy = 3;
 				}
-				else if (regex_match(wholeLine, regex("^\\s*P(3|6)\\s*$")))
+				else if (wholeLine[1] == '3' || wholeLine[1] == '6')
 				{
 					format = PBM_P3;
 					repeatCellBy = 1;
@@ -164,12 +172,12 @@ void RawImage::Save(string path)
 	ofstream file;
 	file.open(path);
 
-	if (regex_match(path, regex("^.*\\.[pP][bB][mM]$")))
+	if (endsWith(path, ".pbm"))
 	{
 		format = PBM_P1;
 		file << "P1\n";
 	}
-	else if (regex_match(path, regex("^.*\\.[pP][gG][mM]$")))
+	else if (endsWith(path, ".pgm"))
 	{
 		format = PBM_P2;
 		file << "P2\n";

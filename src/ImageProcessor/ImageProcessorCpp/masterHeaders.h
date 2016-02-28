@@ -3,17 +3,14 @@
 
 #include <algorithm>
 #include <ctype.h>
-#include <exception>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <regex>
-#include <stdexcept>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
 #include <sstream>
-#include <typeinfo>
 #include <vector>
 using namespace std;
 
@@ -126,9 +123,10 @@ string getParamValue(string paramName, string param);
 string toLowerString(string s);
 string trim(string str);
 vector<string> splitParam(string param);
+bool endsWith(string str, string end);
 bool fileExists(const string& path);
+bool isWhiteSpace(char c);
 bool isMatch(string a, string b);
-bool readLine(istream& is, vector<string>& line);
 void appendAndWrap(string* builder, string text, unsigned int width);
 void appendAndWrap(string* builder, string text, unsigned int width, string beginEachStringWith);
 #endif

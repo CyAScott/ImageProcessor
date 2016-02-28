@@ -272,3 +272,38 @@ bool validate(vector<CommandLineArgModel*> args)
 
 	return true;
 }
+
+void testRegExPatterns()
+{
+	//sometimes the reg patterns will not work on every machine
+	unsigned int argAttLength = sizeof(ArgAttributes) / sizeof(ArgAttributes[0]), index, paramIndex;
+	map<string, int> patterns;
+
+
+	for (index = 0; index < argAttLength; index++)
+	{
+		for (paramIndex = 0; paramIndex < ArgAttributes[index].Params.size(); paramIndex++)
+		{
+			string pattern = ArgAttributes[index].Params.at(paramIndex).Pattern;
+
+			map<string, int>::iterator hHistogramIt = patterns.find(pattern);
+			if (hHistogramIt == patterns.end())
+			{
+				patterns.insert(make_pair(pattern, 1));
+			}
+		}
+	}
+
+	for (map<string, int>::iterator it = patterns.begin(); it != patterns.end(); ++it)
+	{
+		try
+		{
+			regex_match("test regex pattern", regex(it->first));
+		}
+		catch (...)
+		{
+			cerr << "Failed to read reg ex pattern \"" << it->first << "\"\n";
+			throw "Regex pattern error.";
+		}
+	}
+}

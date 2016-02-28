@@ -61,7 +61,7 @@ void MedianFilter::ParseArgument(CommandLineArgModel* arg)
 
 		if (model->Window < 0)
 		{
-			string value = getParamValue("\\s*window\\s*", arg->Parameters->at(index));
+			string value = getParamValue("window", arg->Parameters->at(index));
 
 			if (value.length())
 			{
@@ -71,23 +71,23 @@ void MedianFilter::ParseArgument(CommandLineArgModel* arg)
 
 		if (!hasX)
 		{
-			string value = getParamValue("\\s*x\\s*", arg->Parameters->at(index));
+			string value = getParamValue("x", arg->Parameters->at(index));
 
 			if (value.length())
 			{
 				hasX = true;
-				model->X = regex_match(value, regex("\\s*true\\s*"));
+				model->X = isMatch(value, "true");
 			}
 		}
 
 		if (!hasY)
 		{
-			string value = getParamValue("\\s*y\\s*", arg->Parameters->at(index));
+			string value = getParamValue("y", arg->Parameters->at(index));
 
 			if (value.length())
 			{
 				hasY = true;
-				model->Y = regex_match(value, regex("\\s*true\\s*"));
+				model->Y = isMatch(value, "true");
 			}
 		}
 	}

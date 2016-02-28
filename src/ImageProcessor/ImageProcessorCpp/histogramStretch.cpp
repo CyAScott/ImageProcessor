@@ -72,7 +72,7 @@ void HistogramStretch::ParseArgument(CommandLineArgModel* arg)
 
 		if (!hasPercentile)
 		{
-			string value = getParamValue("\\s*percentile\\s*", arg->Parameters->at(index));
+			string value = getParamValue("percentile", arg->Parameters->at(index));
 
 			if (value.length())
 			{
