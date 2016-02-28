@@ -3,13 +3,17 @@
 
 #include <algorithm>
 #include <ctype.h>
+#include <exception>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <regex>
+#include <stdexcept>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
 #include <sstream>
+#include <typeinfo>
 #include <vector>
 using namespace std;
 
@@ -20,6 +24,15 @@ enum NetpbmFormat
 	PBM_P1 = 1,
 	PBM_P2 = 2,
 	PBM_P3 = 3
+};
+
+struct HistogramResult
+{
+	vector<int> R;
+	vector<int> G;
+	vector<int> B;
+
+	vector<int> I;
 };
 
 struct ParamAttribute

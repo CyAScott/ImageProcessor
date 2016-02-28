@@ -6,7 +6,6 @@
 ArgAttribute const ArgAttributes[] =
 {
 	{
-		//"Help",
 		"Help",
 		"Will list all possible command line arguments and their descriptions.",
 		
@@ -289,6 +288,235 @@ ArgAttribute const ArgAttributes[] =
 				"\\s*roi\\s*\\:\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*",
 				//Description
 				"Applies the filter to a target section of the image. The default value is the whole image",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			}
+		}
+	},
+	{
+		"GrayHistogram",
+		"Generates a histogram image based on a gray scale render of the image.",
+
+		//AllowRoi
+		true,
+		//IsFilter
+		true,
+		//OnlyOne
+		false,
+		//Required
+		false,
+
+		//ParamRangeError
+		"The -GrayHistogram argument requires at most one parameter (i.e. -GrayHistogram roi:0,0,10,10).",
+		//ParamMin
+		0,
+		//ParamMax
+		1,
+
+		{
+			{
+				//Format
+				"roi:<x>,<y>,<width>,<height>",
+				//Pattern,
+				"\\s*roi\\s*\\:\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*",
+				//Description
+				"Applies the filter to a target section of the image. The default value is the whole image",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			}
+		}
+	},
+	{
+		"GrayHistogramEqualization",
+		"Changes the contrast of a gray image based on the histogram.",
+
+		//AllowRoi
+		true,
+		//IsFilter
+		true,
+		//OnlyOne
+		false,
+		//Required
+		false,
+
+		//ParamRangeError
+		"The -GrayHistogramEqualization argument requires at most one parameter (i.e. -GrayHistogramEqualization roi:0,0,10,10).",
+		//ParamMin
+		0,
+		//ParamMax
+		1,
+
+		{
+			{
+				//Format
+				"roi:<x>,<y>,<width>,<height>",
+				//Pattern,
+				"\\s*roi\\s*\\:\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*",
+				//Description
+				"Applies the filter to a target section of the image. The default value is the whole image",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			}
+		}
+	},
+	{
+		"HistogramStretch",
+		"Changes the contrast of an image based on a percentile in the histogram.",
+
+		//AllowRoi
+		true,
+		//IsFilter
+		true,
+		//OnlyOne
+		false,
+		//Required
+		false,
+
+		//ParamRangeError
+		"The -HistogramStretch argument requires at most two parameters (i.e. -HistogramStretch roi:0,0,10,10 percentile:0.5).",
+		//ParamMin
+		0,
+		//ParamMax
+		2,
+
+		{
+			{
+				//Format
+				"roi:<x>,<y>,<width>,<height>",
+				//Pattern,
+				"\\s*roi\\s*\\:\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*",
+				//Description
+				"Applies the filter to a target section of the image. The default value is the whole image",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"percentile:<double>",
+				//Pattern,
+				"\\s*percentile\\s*\\:\\s*(0*|0*1(\\.?|\\.0*)|0*\\.\\d+)\\s*",
+				//Description
+				"Must be a value between 0 and 1. "
+				"The default value is 0.05. "
+				"This value will be used as the lower and upper percentile of the histogram.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			}
+		}
+	},
+	{
+		"HistogramEqualization",
+		"Changes the contrast of an image based on the histogram.",
+
+		//AllowRoi
+		true,
+		//IsFilter
+		true,
+		//OnlyOne
+		false,
+		//Required
+		false,
+
+		//ParamRangeError
+		"The -HistogramEqualization argument requires at most one parameter (i.e. -HistogramEqualization roi:0,0,10,10).",
+		//ParamMin
+		0,
+		//ParamMax
+		1,
+
+		{
+			{
+				//Format
+				"roi:<x>,<y>,<width>,<height>",
+				//Pattern,
+				"\\s*roi\\s*\\:\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*",
+				//Description
+				"Applies the filter to a target section of the image. The default value is the whole image",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			}
+		}
+	},
+	{
+		"HsiHistogramEqualization",
+		"Changes the contrast of an image based on the histogram.",
+
+		//AllowRoi
+		true,
+		//IsFilter
+		true,
+		//OnlyOne
+		false,
+		//Required
+		false,
+
+		//ParamRangeError
+		"The -HistogramEqualization argument requires at most one parameter (i.e. -HistogramEqualization roi:0,0,10,10).",
+		//ParamMin
+		0,
+		//ParamMax
+		1,
+
+		{
+			{
+				//Format
+				"roi:<x>,<y>,<width>,<height>",
+				//Pattern,
+				"\\s*roi\\s*\\:\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*",
+				//Description
+				"Applies the filter to a target section of the image. The default value is the whole image",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"h:<boolean>",
+				//Pattern,
+				"\\s*h\\s*\\:\\s*(true|false)\\s*",
+				//Description
+				"Applies the filter only to the H channel. "
+				"The color of the image will change if this filter option is used. "
+				"The default value is false.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"s:<boolean>",
+				//Pattern,
+				"\\s*s\\s*\\:\\s*(true|false)\\s*",
+				//Description
+				"Applies the filter only to the S channel. "
+				"The default value is true.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"i:<boolean>",
+				//Pattern,
+				"\\s*i\\s*\\:\\s*(true|false)\\s*",
+				//Description
+				"Applies the filter only to the I channel. "
+				"The default value is true.",
 				//Optional
 				true,
 				//IsCaseSensitive

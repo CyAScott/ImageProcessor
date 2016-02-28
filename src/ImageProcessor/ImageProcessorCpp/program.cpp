@@ -11,8 +11,10 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		vector<CommandLineArgModel*> args = parse(argc, argv);
+		cout << "Starting image processor.\n\n";
 
+		vector<CommandLineArgModel*> args = parse(argc, argv);
+		
 		if (!validate(args))
 		{
 			return EXIT_SUCCESS;
@@ -44,6 +46,7 @@ int main(int argc, char* argv[])
 		convertForReadCommand.append("\" -compress none \"");
 		convertForReadCommand.append(inputTemp);
 		convertForReadCommand.append("\"");
+		cout << convertForReadCommand << "\n\n";
 		if (system(convertForReadCommand.c_str()))
 		{
 			cerr << "Failed to read the file.";
@@ -61,6 +64,7 @@ int main(int argc, char* argv[])
 		convertForWriteCommand.append("\" \"");
 		convertForWriteCommand.append(output);
 		convertForWriteCommand.append("\"");
+		cout << "\n" << convertForWriteCommand << "\n\n";
 		if (system(convertForWriteCommand.c_str()))
 		{
 			cerr << "Failed to write the file.";

@@ -29,6 +29,7 @@ RawImage::RawImage(string path)
 	vector<byte> buffer;
 	vector<string> line;
 	bool readFormat = false, readSize = false, readWordSize = false;
+	double wordCoefficient = 1.0;
 	unsigned int repeatCellBy = 1, rowLength;
 
 	while (getline(file, wholeLine))
@@ -94,6 +95,7 @@ RawImage::RawImage(string path)
 			}
 			else if (!readWordSize)
 			{
+				wordCoefficient = 255.0 / stod(line.at(0));
 				readWordSize = true;
 			}
 			else
@@ -102,7 +104,7 @@ RawImage::RawImage(string path)
 
 				for (unsigned int index = 0; index < line.size(); index++)
 				{
-					byte value = stoi(line.at(index));
+					byte value = min(255.0, max(0.0, round(stod(line.at(index)) * wordCoefficient)));
 
 					if (format == PBM_P1)
 					{
@@ -317,4 +319,33 @@ void RawImage::Grayscale(int x, int y)
 byte RawImage::ThresholdFilter(int x, int y, byte threshold)
 {
 	return getBrightness(x * 3, y) >= threshold ? 255 : 0;
+}
+
+HistogramResult RawImage::GetHistogram(Rectangle roi)
+{
+	HistogramResult returnValue;
+
+	for (int i = 0; i < 256; i++)
+	{
+		returnValue.R.push_back(0);
+		returnValue.B.push_back(0);
+		returnValue.G.push_back(0);
+
+		returnValue.I.push_back(0);
+	}
+
+
+	for (int y = roi.Y; y < roi.Bottom; y++)
+		for (int x = roi.X; x < roi.Right; x++)
+		{
+			int xOffset = x * 3;
+
+			returnValue.R.at(rawBytes.at(y).at(xOffset))++;
+			returnValue.G.at(rawBytes.at(y).at(xOffset + 1))++;
+			returnValue.B.at(rawBytes.at(y).at(xOffset + 2))++;
+
+			returnValue.I.at(GetBrightness(x, y))++;
+		}
+
+	return returnValue;
 }

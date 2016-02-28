@@ -1,12 +1,22 @@
 #include "filterPipe.h"
+#include "grayHistogram.h"
+#include "grayHistogramEqualization.h"
 #include "grayscaleFilter.h"
+#include "histogramEqualization.h"
+#include "histogramStretch.h"
+#include "hsiHistogramEqualization.h"
 #include "medianFilter.h"
 #include "scaleFilter.h"
 #include "thresholdFilter.h"
 
 vector<FilterHelper*> filters =
 {
+	new GrayHistogram(),
+	new GrayHistogramEqualization(),
 	new GrayscaleFilter(),
+	new HistogramEqualization(),
+	new HistogramStretch(),
+	new HsiHistogramEqualization(),
 	new MedianFilter(),
 	new ScaleFilter(),
 	new ThresholdFilter()

@@ -8,6 +8,14 @@ vector<CommandLineArgModel*> parse(unsigned int argc, char* argv[])
 	string arg;
 	unsigned int argAttIndex, argAttLength = sizeof(ArgAttributes) / sizeof(ArgAttributes[0]), index;
 
+	if (argc == 0)
+	{
+		currentArgument = new CommandLineArgModel();
+		currentArgument->Argument = ArgAttributes[0];
+		arguments.push_back(currentArgument);
+		return arguments;
+	}
+
 	for (index = 1; index < argc; index++)
 	{
 		arg = argv[index];

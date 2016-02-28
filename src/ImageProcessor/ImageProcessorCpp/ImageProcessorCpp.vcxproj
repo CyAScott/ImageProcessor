@@ -68,7 +68,12 @@
   <ItemGroup>
     <ClCompile Include="arguments.cpp" />
     <ClCompile Include="filterPipe.cpp" />
+    <ClCompile Include="grayHistogramEqualization.cpp" />
     <ClCompile Include="grayscaleFilter.cpp" />
+    <ClCompile Include="grayHistogram.cpp" />
+    <ClCompile Include="histogramEqualization.cpp" />
+    <ClCompile Include="histogramStretch.cpp" />
+    <ClCompile Include="hsiHistogramEqualization.cpp" />
     <ClCompile Include="masterHeaders.cpp" />
     <ClCompile Include="medianFilter.cpp" />
     <ClCompile Include="program.cpp" />
@@ -79,7 +84,12 @@
   <ItemGroup>
     <ClInclude Include="arguments.h" />
     <ClInclude Include="filterPipe.h" />
+    <ClInclude Include="grayHistogramEqualization.h" />
     <ClInclude Include="grayscaleFilter.h" />
+    <ClInclude Include="grayHistogram.h" />
+    <ClInclude Include="histogramEqualization.h" />
+    <ClInclude Include="histogramStretch.h" />
+    <ClInclude Include="hsiHistogramEqualization.h" />
     <ClInclude Include="masterHeaders.h" />
     <ClInclude Include="medianFilter.h" />
     <ClInclude Include="rawImage.h" />

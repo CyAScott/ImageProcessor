@@ -31,6 +31,8 @@ class RawImage
 		void Grayscale(int x, int y);
 
 		byte ThresholdFilter(int x, int y, byte threshold);
+
+		HistogramResult GetHistogram(Rectangle roi);
 };
 
 #endif
