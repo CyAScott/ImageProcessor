@@ -18,6 +18,21 @@ thresholdFilter.o: thresholdFilter.cpp
 
 scaleFilter.o: scaleFilter.cpp
 	g++ -Wall -c -std=c++11 scaleFilter.cpp -o Release/scaleFilter.o
+
+grayHistogram.o: grayHistogram.cpp
+	g++ -Wall -c -std=c++11 grayHistogram.cpp -o Release/grayHistogram.o
+
+grayHistogramEqualization.o: grayHistogramEqualization.cpp
+	g++ -Wall -c -std=c++11 grayHistogramEqualization.cpp -o Release/grayHistogramEqualization.o
+
+histogramStretch.o: histogramStretch.cpp
+	g++ -Wall -c -std=c++11 histogramStretch.cpp -o Release/histogramStretch.o
+	
+histogramEqualization.o: histogramEqualization.cpp
+	g++ -Wall -c -std=c++11 histogramEqualization.cpp -o Release/histogramEqualization.o
+
+hsiHistogramEqualization.o: hsiHistogramEqualization.cpp
+	g++ -Wall -c -std=c++11 hsiHistogramEqualization.cpp -o Release/hsiHistogramEqualization.o
 	
 filterPipe.o: filterPipe.cpp
 	g++ -Wall -c -std=c++11 filterPipe.cpp -o Release/filterPipe.o
@@ -25,5 +40,5 @@ filterPipe.o: filterPipe.cpp
 program.o: program.cpp
 	g++ -Wall -c -std=c++11 program.cpp -o Release/program.o
 
-all : masterHeaders.o arguments.o rawImage.o grayscaleFilter.o medianFilter.o scaleFilter.o thresholdFilter.o filterPipe.o program.o
-	g++ -Wall Release/masterHeaders.o Release/arguments.o Release/rawImage.o Release/grayscaleFilter.o Release/medianFilter.o Release/scaleFilter.o Release/thresholdFilter.o Release/filterPipe.o Release/program.o -o Release/ImageProcessor	
+all : masterHeaders.o arguments.o rawImage.o grayscaleFilter.o medianFilter.o scaleFilter.o thresholdFilter.o grayHistogram.o grayHistogramEqualization.o histogramStretch.o histogramEqualization.o hsiHistogramEqualization.o filterPipe.o program.o
+	g++ -Wall Release/masterHeaders.o Release/arguments.o Release/rawImage.o Release/grayscaleFilter.o Release/medianFilter.o Release/scaleFilter.o Release/thresholdFilter.o Release/grayHistogram.o Release/grayHistogramEqualization.o Release/histogramStretch.o Release/histogramEqualization.o Release/hsiHistogramEqualization.o Release/filterPipe.o Release/program.o -o Release/ImageProcessor	
