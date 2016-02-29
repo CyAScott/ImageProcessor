@@ -1,17 +1,24 @@
 #ifndef MASTERHEADERS_H
 #define MASTERHEADERS_H
 
+#if _WIN32
+#include <regex>
+#else
+#include <boost/regex.hpp>
+using namespace boost;
+#endif
+
 #include <algorithm>
 #include <ctype.h>
 #include <fstream>
 #include <iostream>
 #include <map>
-#include <regex>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
 #include <sstream>
 #include <vector>
+
 using namespace std;
 
 typedef unsigned char byte;

@@ -302,7 +302,8 @@ void testRegExPatterns()
 		}
 		catch (...)
 		{
-			cerr << "Failed to read reg ex pattern \"" << it->first << "\"\n";
+			cerr << "Failed to read reg ex pattern \"" << it->first << "\". "
+				"Maybe you compiled this project with a GCC version below 4.9.\n";
 			throw "Regex pattern error.";
 		}
 	}
