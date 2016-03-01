@@ -1,13 +1,6 @@
 #ifndef MASTERHEADERS_H
 #define MASTERHEADERS_H
 
-#if _WIN32
-#include <regex>
-#else
-#include <boost/regex.hpp>
-using namespace boost;
-#endif
-
 #include <algorithm>
 #include <ctype.h>
 #include <fstream>

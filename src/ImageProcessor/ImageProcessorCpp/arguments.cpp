@@ -191,7 +191,8 @@ bool validate(vector<CommandLineArgModel*> args)
 				throw exception();
 			}
 
-			for (foundParamIndex = 0; foundParamIndex < paramLength; foundParamIndex++)
+			//Regex is not supported on the usf machines
+			/*for (foundParamIndex = 0; foundParamIndex < paramLength; foundParamIndex++)
 			{
 				matchFound = false;
 				for (paramIndex = 0; paramIndex < ArgAttributes[index].Params.size() && !matchFound; paramIndex++)
@@ -216,7 +217,7 @@ bool validate(vector<CommandLineArgModel*> args)
 					cerr << " argument paramters are invalid.";
 					throw exception();
 				}
-			}
+			}*/
 		}
 
 		if (!displayHelp &&
@@ -294,7 +295,7 @@ void testRegExPatterns()
 		}
 	}
 
-	for (map<string, int>::iterator it = patterns.begin(); it != patterns.end(); ++it)
+	/*for (map<string, int>::iterator it = patterns.begin(); it != patterns.end(); ++it)
 	{
 		try
 		{
@@ -306,5 +307,5 @@ void testRegExPatterns()
 				"Maybe you compiled this project with a GCC version below 4.9.\n";
 			throw "Regex pattern error.";
 		}
-	}
+	}*/
 }
