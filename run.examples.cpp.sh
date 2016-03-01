@@ -7,9 +7,10 @@
 ./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/Color/11.jpg -median window:101 roi:10,5,100,250 x:true y:true -output output.median.xy.png
 ./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input "assets/Gray Level/slope.jpg" -grayhistogram -output output.grayhistogram.png
 ./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input "assets/Gray Level/slope.jpg" -grayhistogramequalization -output output.grayhistogramequalization.png
-./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/color/pen.jpg -histogramstretch -output output.histogramstretch.png
-./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/color/pen.jpg -histogramequalization -output output.histogramequalization.png
-./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/color/pen.jpg -hsihistogramequalization h:true s:true i:false -output output.hsihistogramequalization.hs.png
-./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/color/pen.jpg -hsihistogramequalization h:false s:true i:true -output output.hsihistogramequalization.si.png
-./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/color/pen.jpg -hsihistogramequalization h:true s:true i:true -output output.hsihistogramequalization.hsi.png
-./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/color/pen.jpg -hsihistogramequalization h:false s:false i:true -output output.hsihistogramequalization.i.png
+./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input output.grayhistogramequalization.png -grayhistogram -output output.grayhistogramequalization.grayhistogram.png
+./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/Color/pen.jpg -histogramstretch -output output.histogramstretch.png
+./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/Color/pen.jpg -histogramequalization -output output.histogramequalization.png
+./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/Color/pen.jpg -hsihistogramequalization h:true s:true i:false -output output.hsihistogramequalization.hs.png
+./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/Color/pen.jpg -hsihistogramequalization h:false s:true i:true -output output.hsihistogramequalization.si.png
+./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/Color/pen.jpg -hsihistogramequalization h:true s:true i:true -output output.hsihistogramequalization.hsi.png
+./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/Color/pen.jpg -hsihistogramequalization h:false s:false i:true -output output.hsihistogramequalization.i.png
