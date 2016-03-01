@@ -467,7 +467,7 @@ ArgAttribute const ArgAttributes[] =
 		//ParamMin
 		0,
 		//ParamMax
-		1,
+		4,
 
 		{
 			{
