@@ -147,3 +147,86 @@ All Arguments-------------------------------------------------------------------
                     When calculating the resulting pixel, a window surrounding the target
                     pixel is used for the calculation. This value must be a positive odd
                     integer. The default value is 3.
+
+-GrayHistogram: Optional
+
+		Generates a histogram image based on a gray scale render of the image.
+
+		Argument Parameter(s):
+				Format: roi:<x>,<y>,<width>,<height>
+				ptional:
+				Description:
+						Applies the filter to a target section of the image. The default value is the
+						whole image
+
+
+-GrayHistogramEqualization: Optional
+
+		Changes the contrast of a gray image based on the histogram.
+
+		Argument Parameter(s):
+				Format: roi:<x>,<y>,<width>,<height>
+				ptional:
+				Description:
+						Applies the filter to a target section of the image. The default value is the
+						whole image
+
+
+-HistogramStretch: Optional
+
+		Changes the contrast of an image based on a percentile in the histogram.
+
+		Argument Parameter(s):
+				Format: roi:<x>,<y>,<width>,<height>
+				ptional:
+				Description:
+						Applies the filter to a target section of the image. The default value is the
+						whole image
+
+				Format: percentile:<double>
+				ptional:
+				Description:
+						Must be a value between 0 and 1. The default value is 0.05. This value will be
+						used as the lower and upper percentile of the histogram.
+
+
+-HistogramEqualization: Optional
+
+		Changes the contrast of an image based on the histogram.
+
+		Argument Parameter(s):
+				Format: roi:<x>,<y>,<width>,<height>
+				ptional:
+				Description:
+						Applies the filter to a target section of the image. The default value is the
+						whole image
+
+
+-HsiHistogramEqualization: Optional
+
+		Changes the contrast of an image based on the histogram.
+
+		Argument Parameter(s):
+				Format: roi:<x>,<y>,<width>,<height>
+				ptional:
+				Description:
+						Applies the filter to a target section of the image. The default value is the
+						whole image
+
+				Format: h:<boolean>
+				ptional:
+				Description:
+						Applies the filter only to the H channel. The color of the image will change if
+						this filter option is used. The default value is false.
+
+				Format: s:<boolean>
+				ptional:
+				Description:
+						Applies the filter only to the S channel. The default value is true.
+
+				Format: i:<boolean>
+				ptional:
+				Description:
+						Applies the filter only to the I channel. The default value is true.
+
+
