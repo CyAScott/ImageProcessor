@@ -34,11 +34,14 @@ histogramEqualization.o: histogramEqualization.cpp
 hsiHistogramEqualization.o: hsiHistogramEqualization.cpp
 	g++ -Wall -c -std=c++11 hsiHistogramEqualization.cpp -o Release/hsiHistogramEqualization.o
 	
+sobelEdgeDetection.o: sobelEdgeDetection.cpp
+	g++ -Wall -c -std=c++11 sobelEdgeDetection.cpp -o Release/sobelEdgeDetection.o
+	
 filterPipe.o: filterPipe.cpp
 	g++ -Wall -c -std=c++11 filterPipe.cpp -o Release/filterPipe.o
 
 program.o: program.cpp
 	g++ -Wall -c -std=c++11 program.cpp -o Release/program.o
 
-all : masterHeaders.o arguments.o rawImage.o grayscaleFilter.o medianFilter.o scaleFilter.o thresholdFilter.o grayHistogram.o grayHistogramEqualization.o histogramStretch.o histogramEqualization.o hsiHistogramEqualization.o filterPipe.o program.o
-	g++ -Wall Release/masterHeaders.o Release/arguments.o Release/rawImage.o Release/grayscaleFilter.o Release/medianFilter.o Release/scaleFilter.o Release/thresholdFilter.o Release/grayHistogram.o Release/grayHistogramEqualization.o Release/histogramStretch.o Release/histogramEqualization.o Release/hsiHistogramEqualization.o Release/filterPipe.o Release/program.o -o Release/ImageProcessor	
+all : masterHeaders.o arguments.o rawImage.o grayscaleFilter.o medianFilter.o scaleFilter.o thresholdFilter.o grayHistogram.o grayHistogramEqualization.o histogramStretch.o histogramEqualization.o hsiHistogramEqualization.o sobelEdgeDetection.o filterPipe.o program.o
+	g++ -Wall Release/masterHeaders.o Release/arguments.o Release/rawImage.o Release/grayscaleFilter.o Release/medianFilter.o Release/scaleFilter.o Release/thresholdFilter.o Release/grayHistogram.o Release/grayHistogramEqualization.o Release/histogramStretch.o Release/histogramEqualization.o Release/hsiHistogramEqualization.o Release/sobelEdgeDetection.o Release/filterPipe.o Release/program.o -o Release/ImageProcessor	
