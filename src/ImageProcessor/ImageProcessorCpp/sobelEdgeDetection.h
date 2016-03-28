@@ -15,7 +15,7 @@ class SobelEdgeDetection : public FilterHelper
 class SobelEdgeDetectionModel : public CommandLineArgParsedModel
 {
 	public:
-		ColorSpace ColorSpace;
+		ColorSpaceEnum ColorSpace;
 		bool ColorChannel1;
 		bool ColorChannel2;
 		bool ColorChannel3;

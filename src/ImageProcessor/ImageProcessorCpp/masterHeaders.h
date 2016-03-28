@@ -25,7 +25,7 @@ enum NetpbmFormat
 	PBM_P3 = 3
 };
 
-enum ColorSpace
+enum ColorSpaceEnum
 {
 	GRAY = 1,
 	RGB = 2,
