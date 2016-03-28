@@ -165,9 +165,7 @@ ArgAttribute const ArgAttributes[] =
 				//Pattern,
 				"\\s*threshold\\s*\\:\\s*(0*|0*1(\\.?|\\.0*)|0*\\.\\d+)\\s*",
 				//Description
-				"Must be a value greater than or equal to zero. "
-				"Values below 1.0 will shrink the image and values above 1.0 will increase the image size. "
-				"If the value is 1.0 then the image will not be altered.",
+				"Must be a value greater than or equal to zero.",
 				//Optional
 				true,
 				//IsCaseSensitive
@@ -463,7 +461,7 @@ ArgAttribute const ArgAttributes[] =
 		false,
 
 		//ParamRangeError
-		"The -HistogramEqualization argument requires at most one parameter (i.e. -HistogramEqualization roi:0,0,10,10).",
+		"The -HistogramEqualization argument requires at most four parameters (i.e. -HistogramEqualization roi:0,0,10,10 h:true s:alse i:true).",
 		//ParamMin
 		0,
 		//ParamMax
@@ -516,6 +514,133 @@ ArgAttribute const ArgAttributes[] =
 				"\\s*i\\s*\\:\\s*(true|false)\\s*",
 				//Description
 				"Applies the filter only to the I channel. "
+				"The default value is true.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			}
+		}
+	},
+	{
+		"SobelEdgeDetection",
+		"Edge detection using Sobel operator.",
+
+		//AllowRoi
+		true,
+		//IsFilter
+		true,
+		//OnlyOne
+		false,
+		//Required
+		false,
+
+		//ParamRangeError
+		"The -SobelEdgeDetection argument requires at most eight parameters (i.e. -SobelEdgeDetection roi:0,0,10,10 window:3 threshold:90 direction:45 colorChannel1:true colorChannel2:false colorChannel3:false).",
+		//ParamMin
+		0,
+		//ParamMax
+		8,
+
+		{
+			{
+				//Format
+				"roi:<x>,<y>,<width>,<height>",
+				//Pattern,
+				"\\s*roi\\s*\\:\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*",
+				//Description
+				"Applies the filter to a target section of the image. The default value is the whole image",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"window:<integer>",
+				//Pattern,
+				"\\s*window\\s*\\:\\s*\\(3|5)\\s*",
+				//Description
+				"When calculating the resulting pixel, a window surrounding the target pixel is used for the calculation. "
+				"This value must be a positive odd integer (only 3 and 5 are supported). "
+				"The default value is 3.",
+				//Optional
+				true
+			},
+			{
+				//Format
+				"threshold:<byte>",
+				//Pattern,
+				"\\s*threshold\\s*\\:\\s*(22[0-5]|2[01]\\d|1\\d+\\d+|\\d+\\d+|\\d+)\\s*",
+				//Description
+				"Must be a value 0 and 255. "
+				"Colors greater than or equal to the value will be set as white else black. "
+				"If no threshold value is provided then the image will be grayscale.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"direction:<integer>",
+				//Pattern,
+				"\\s*direction\\s*\\:\\s*\\d+\\s*",
+				//Description
+				"A direction measured in degrees. "
+				"Only edges that match this angle will be used. "
+				"If no direction value is provided then all angles will be used.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"color:<enum>",
+				//Pattern,
+				"\\s*color\\s*\\:\\s*(gray|rgb|hsi)\\s*",
+				//Description
+				"The color space to use. "
+				"The default value is gray.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"colorChannel1:<boolean>",
+				//Pattern,
+				"\\s*colorChannel1\\s*\\:\\s*(true|false)\\s*",
+				//Description
+				"If the color parameter is rgb or hsi then r or h channel will be used of edge detection. "
+				"The default value is true.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"colorChannel2:<boolean>",
+				//Pattern,
+				"\\s*colorChannel2\\s*\\:\\s*(true|false)\\s*",
+				//Description
+				"If the color parameter is rgb or hsi then g or s channel will be used of edge detection. "
+				"The default value is true.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"colorChannel3:<boolean>",
+				//Pattern,
+				"\\s*colorChannel3\\s*\\:\\s*(true|false)\\s*",
+				//Description
+				"If the color parameter is rgb or hsi then b or i channel will be used of edge detection. "
 				"The default value is true.",
 				//Optional
 				true,

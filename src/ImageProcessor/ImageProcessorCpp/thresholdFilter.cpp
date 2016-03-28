@@ -8,7 +8,7 @@ RawImage* ThresholdFilter::ProcessInput(CommandLineArgModel* arg, RawImage* imag
 
 	for (int y = roi.Y; y < roi.Bottom; y++)
 		for (int x = roi.X; x < roi.Right; x++)
-			image->SetPixel(x, y, image->ThresholdFilter(x, y, threshold));
+			image->SetPixel(x, y, image->ThresholdFilter(x, y, roundToByte(threshold)));
 
 	return image;
 }
@@ -43,7 +43,7 @@ void ThresholdFilter::ParseArgument(CommandLineArgModel* arg)
 			if (value.length())
 			{
 				hasThreshold = true;
-				model->Threshold = stod(trim(value)) * 255;
+				model->Threshold = roundToByte(stod(trim(value)) * 255);
 			}
 		}
 	}

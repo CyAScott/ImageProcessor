@@ -14,7 +14,7 @@ RawImage* GrayHistogramEqualization::ProcessInput(CommandLineArgModel* arg, RawI
 		double probability = (double)histogram.at(i) / totalNumberOfPixels;
 		cumulativeProbabilityValue += probability;
 
-		histogramPixelMap.push_back(floor(cumulativeProbabilityValue * 255.0));
+		histogramPixelMap.push_back(roundToByte(floor(cumulativeProbabilityValue * 255.0)));
 	}
 
 	for (int y = roi.Y; y < roi.Bottom; y++)

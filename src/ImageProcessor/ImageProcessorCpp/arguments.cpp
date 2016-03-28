@@ -2,7 +2,7 @@
 
 vector<CommandLineArgModel*> parse(unsigned int argc, char* argv[])
 {
-	struct CommandLineArgModel *currentArgument = NULL;
+	CommandLineArgModel *currentArgument = NULL;
 	vector<CommandLineArgModel*> arguments;
 	vector<string> parameters;
 	string arg;
@@ -81,9 +81,9 @@ bool validate(vector<CommandLineArgModel*> args)
 	string descriptionText, documentation, temp;
 	vector<CommandLineArgModel*> foundArgs;
 	const int documentationWidth = 80;
-	bool displayHelp = false, isOnlyOneAllowed, isRequired, matchFound;
+	bool displayHelp = false, isOnlyOneAllowed, isRequired;
 	unsigned int argAttLength = sizeof(ArgAttributes) / sizeof(ArgAttributes[0]), 
-		argIndex, foundArgIndex, foundParamIndex, index, paramIndex;
+		argIndex, foundArgIndex, index, paramIndex;
 	
 	for (argIndex = 0; argIndex < args.size(); argIndex++)
 	{

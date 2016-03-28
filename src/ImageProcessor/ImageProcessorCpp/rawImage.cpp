@@ -112,7 +112,7 @@ RawImage::RawImage(string path)
 
 				for (unsigned int index = 0; index < line.size(); index++)
 				{
-					byte value = min(255.0, max(0.0, round(stod(line.at(index)) * wordCoefficient)));
+					byte value = roundToByte(stod(line.at(index)) * wordCoefficient);
 
 					if (format == PBM_P1)
 					{
@@ -166,6 +166,74 @@ RawImage::RawImage(int width, int height)
 
 	size = { width, height };
 }
+
+HsiImage RawImage::ExportHsi(Rectangle roi)
+{
+	vector<vector<double>> H;
+	vector<vector<double>> S;
+	vector<vector<int>> I;
+
+	for (int y = roi.Y; y < roi.Bottom; y++)
+	{
+		vector<double> hRow;
+		vector<double> sRow;
+		vector<int> iRow;
+
+		for (int x = roi.X; x < roi.Right; x++)
+		{
+			Color color = GetPixel(x, y);
+			double r = color.R;
+			double b = color.B;
+			double g = color.G;
+
+			int i = (int)(r + b + g) / 3;
+
+			double m = min(min(r, b), g);
+			double s = i == 0 ? 0.0 : 1.0 - m / (double)i;
+
+			double h = 0.0;
+			if (r - g == 0.0 && r - b == 0.0)
+			{
+				h = 0.0;
+			}
+			else
+			{
+				if (g - b >= 0.0)
+				{
+					h = acos((r - 0.5 * g - 0.5 * b) / sqrt(r * r + g * g + b * b - r * g - r * b - g * b)) * 180.0 / PI;
+				}
+				if (g - b < 0.0)
+				{
+					h = 360.0 - acos((r - 0.5 * g - 0.5 * b) / sqrt(r * r + g * g + b * b - r * g - r * b - g * b)) * 180.0 / PI;
+				}
+			}
+
+			hRow.push_back(h);
+			sRow.push_back(s);
+			iRow.push_back(i);
+		}
+
+		H.push_back(hRow);
+		S.push_back(sRow);
+		I.push_back(iRow);
+	}
+
+	return{ H, S, I };
+}
+void RawImage::ApplyHsi(Rectangle roi, HsiImage hsiImage)
+{
+	for (int y = 0; y < roi.Height; y++)
+	{
+		for (int x = 0; x < roi.Width; x++)
+		{
+			SetPixel(x + roi.X, y + roi.Y,
+				hsiImage.H.at(y).at(x),
+				hsiImage.S.at(y).at(x),
+				hsiImage.I.at(y).at(x));
+		}
+	}
+}
+
 void RawImage::Save(string path)
 {
 	NetpbmFormat format;
@@ -233,10 +301,14 @@ void RawImage::Save(string path)
 
 byte RawImage::getBrightness(int x, int y)
 {
+	/*
 	byte maxValue = max(max(rawBytes.at(y).at(x), rawBytes.at(y).at(x + 1)), rawBytes.at(y).at(x + 2));
 	byte minValue = min(min(rawBytes.at(y).at(x), rawBytes.at(y).at(x + 1)), rawBytes.at(y).at(x + 2));
 
 	return (maxValue + minValue) / 2;
+	*/
+
+	return (rawBytes.at(y).at(x) + rawBytes.at(y).at(x + 1) + rawBytes.at(y).at(x + 2)) / 3;
 }
 
 RawImage* RawImage::Clone()
@@ -289,6 +361,78 @@ Color RawImage::GetPixel(int x, int y)
 	};
 }
 
+SobelResult RawImage::Sobel(int x, int y, Rectangle roi, vector<vector<int>> masks)
+{
+	SobelResult returnValue = { 0, 0, 0, 0 };
+
+	SobelTargetRoi target = getSobelTargetRoi(x, y, roi, masks);
+
+	target.StartX *= 3;
+	target.StopX *= 3;
+
+	for (int maskX, maskY = target.StartMaskY, xIndex, yIndex = target.StartY; yIndex < target.StopY; maskY++, yIndex++)
+	{
+		for (maskX = target.StartMaskX, xIndex = target.StartX; xIndex < target.StopX; maskX++, xIndex += 3)
+		{
+			byte pixel = getBrightness(xIndex, yIndex);
+
+			returnValue.Gx += pixel * masks.at(maskX).at(maskY);
+			returnValue.Gy += pixel * masks.at(maskY).at(maskX);
+		}
+	}
+
+	returnValue.G = roundToByte((abs(returnValue.Gx) + abs(returnValue.Gy)) / 10);
+
+	returnValue.Direction = returnValue.Gx == 0 ? 0 : 
+		(int)round(atan((double)returnValue.Gy / (double)returnValue.Gx) * 180.0 / PI);
+
+	return returnValue;
+}
+SobelRgbColorResult RawImage::SobelRgb(int x, int y, Rectangle roi, vector<vector<int>> masks)
+{
+	SobelRgbColorResult returnValue =
+	{
+		//R
+		{ 0, 0, 0, 0 },
+		//G
+		{ 0, 0, 0, 0 },
+		//B
+		{ 0, 0, 0, 0 }
+	};
+
+	SobelTargetRoi target = getSobelTargetRoi(x, y, roi, masks);
+
+	for (int maskX, maskY = target.StartMaskY, xIndex, yIndex = target.StartY; yIndex < target.StopY; maskY++, yIndex++)
+	{
+		for (maskX = target.StartMaskX, xIndex = target.StartX; xIndex < target.StopX; maskX++, xIndex++)
+		{
+			Color pixel = GetPixel(xIndex, yIndex);
+
+			returnValue.R.Gx += pixel.R * masks.at(maskX).at(maskY);
+			returnValue.R.Gy += pixel.R * masks.at(maskY).at(maskX);
+
+			returnValue.G.Gx += pixel.G * masks.at(maskX).at(maskY);
+			returnValue.G.Gy += pixel.G * masks.at(maskY).at(maskX);
+
+			returnValue.B.Gx += pixel.B * masks.at(maskX).at(maskY);
+			returnValue.B.Gy += pixel.B * masks.at(maskY).at(maskX);
+		}
+	}
+
+	returnValue.R.G = roundToByte((abs(returnValue.R.Gx) + abs(returnValue.R.Gy)) / 10);
+	returnValue.G.G = roundToByte((abs(returnValue.G.Gx) + abs(returnValue.G.Gy)) / 10);
+	returnValue.B.G = roundToByte((abs(returnValue.B.Gx) + abs(returnValue.B.Gy)) / 10);
+
+	returnValue.R.Direction = returnValue.R.Gx == 0 ? 0 :
+		(int)round(atan((double)returnValue.R.Gy / (double)returnValue.R.Gx) * 180.0 / PI);
+	returnValue.G.Direction = returnValue.G.Gx == 0 ? 0 :
+		(int)round(atan((double)returnValue.G.Gy / (double)returnValue.G.Gx) * 180.0 / PI);
+	returnValue.B.Direction = returnValue.B.Gx == 0 ? 0 :
+		(int)round(atan((double)returnValue.B.Gy / (double)returnValue.B.Gx) * 180.0 / PI);
+
+	return returnValue;
+}
+
 void RawImage::SetPixel(int x, int y, Color color)
 {
 	x *= 3;
@@ -306,6 +450,49 @@ void RawImage::SetPixel(int x, int y, byte r, byte g, byte b)
 	rawBytes.at(y).at(x) = r;
 	rawBytes.at(y).at(x + 1) = g;
 	rawBytes.at(y).at(x + 2) = b;
+}
+void RawImage::SetPixel(int x, int y, double h, double s, byte i)
+{
+	Color color;
+
+	if (h == 0)
+	{
+		color.B = roundToByte(i*(1 - s));
+		color.G = roundToByte(i*(1 - s));
+		color.R = roundToByte(i*(1 + 2 * s));
+	}
+	else if (h > 0.0 && h < 120.0)
+	{
+		color.B = roundToByte(i*(1 - s));
+		color.R = roundToByte(i*(1 + s*cos((h / 180.0)*PI) / cos(PI*(60 - h) / 180.0)));
+		color.G = roundToByte(3 * i - (double)color.R - (double)color.B);
+	}
+	else if (h == 120.0)
+	{
+		color.B = roundToByte(i*(1 - s));
+		color.G = roundToByte(i*(1 + 2 * s));
+		color.R = roundToByte(i*(1 - s));
+	}
+	else if (h > 120.0 && h < 240.0)
+	{
+		color.R = roundToByte(i*(1 - s));
+		color.G = roundToByte(i*(1 + s*cos(PI*(h - 120.0) / 180.0) / cos(PI*(180.0 - h) / 180.0)));
+		color.B = roundToByte(3 * i - (double)color.R - (double)color.G);
+	}
+	else if (h == 240.0)
+	{
+		color.B = roundToByte(i*(1 + 2 * s));
+		color.G = roundToByte(i*(1 - s));
+		color.R = roundToByte(i*(1 - s));
+	}
+	else if (h > 240.0 && h <= 360.0)
+	{
+		color.G = roundToByte(i*(1 - s));
+		color.B = roundToByte(i*(1 + s*cos(PI*(h - 240.0) / 180.0) / cos(PI*(300.0 - h) / 180.0)));
+		color.R = roundToByte(3 * i - (double)color.G - (double)color.B);
+	}
+
+	SetPixel(x, y, color);
 }
 
 byte RawImage::GetBrightness(int x, int y)

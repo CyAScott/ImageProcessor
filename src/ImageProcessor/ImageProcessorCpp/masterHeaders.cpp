@@ -1,5 +1,13 @@
 #include "masterHeaders.h"
 
+byte roundToByte(double value)
+{
+	return (byte)min(255.0, max(0.0, round(value)));
+}
+byte roundToByte(int value)
+{
+	return (byte)min(255, max(0, value));
+}
 Rectangle fromSize(Size size)
 {
 	return 
@@ -51,6 +59,103 @@ Rectangle parseRoi(string param)
 	}
 
 	return{ -1, -1, -1, -1, -1, -1 };
+}
+
+SobelHsiColorResult sobelHsi(HsiImage* image, int x, int y, Rectangle roi, vector<vector<int>> masks)
+{
+
+	SobelHsiColorResult returnValue =
+	{
+		//H
+		{ 0.0, 0.0, 0.0, 0 },
+		//S
+		{ 0.0, 0.0, 0.0, 0 },
+		//I
+		{ 0, 0, 0, 0 }
+	};
+
+	SobelTargetRoi target = getSobelTargetRoi(x, y, roi, masks);
+
+	for (int maskX, maskY = target.StartMaskY, xIndex, yIndex = target.StartY; yIndex < target.StopY; maskY++, yIndex++)
+	{
+		for (maskX = target.StartMaskX, xIndex = target.StartX; xIndex < target.StopX; maskX++, xIndex++)
+		{
+			double h = image->H.at(yIndex).at(xIndex);
+			double s = image->S.at(yIndex).at(xIndex);
+			int i = image->I.at(yIndex).at(xIndex);
+
+			returnValue.H.Gx += h * masks.at(maskX).at(maskY);
+			returnValue.H.Gy += h * masks.at(maskY).at(maskX);
+
+			returnValue.S.Gx += s * masks.at(maskX).at(maskY);
+			returnValue.S.Gy += s * masks.at(maskY).at(maskX);
+
+			returnValue.I.Gx += i * masks.at(maskX).at(maskY);
+			returnValue.I.Gy += i * masks.at(maskY).at(maskX);
+		}
+	}
+
+	returnValue.H.G = (abs(returnValue.H.Gx) + abs(returnValue.H.Gy)) / 10;
+	if (returnValue.H.G > 360.0) returnValue.H.G = fmod(returnValue.H.G, 360.0);
+	if (returnValue.H.G < 0.0) returnValue.H.G = 360 - fmod(abs(returnValue.H.G), 360.0);
+
+	returnValue.S.G = (abs(returnValue.S.Gx) + abs(returnValue.S.Gy)) / 10;
+	if (returnValue.S.G > 1.0) returnValue.S.G = 1.0;
+
+	returnValue.I.G = roundToByte((abs(returnValue.I.Gx) + abs(returnValue.I.Gy)) / 10);
+
+	returnValue.H.Direction = returnValue.H.Gx == 0.0 ? 0 :
+		(int)round(atan((double)returnValue.H.Gy / (double)returnValue.H.Gx) * 180.0 / PI);
+	returnValue.S.Direction = returnValue.S.Gx == 0.0 ? 0 :
+		(int)round(atan((double)returnValue.S.Gy / (double)returnValue.S.Gx) * 180.0 / PI);
+	returnValue.I.Direction = returnValue.I.Gx == 0 ? 0 :
+		(int)round(atan((double)returnValue.I.Gy / (double)returnValue.I.Gx) * 180.0 / PI);
+
+	return returnValue;
+}
+
+SobelTargetRoi getSobelTargetRoi(int x, int y, Rectangle roi, vector<vector<int>> masks)
+{
+	int window = (int)masks.size();
+
+	int padding = (window - 1) / 2;
+
+	int startX = max(x, roi.X);
+	int stopX = min(roi.Right, x + window);
+
+	int startY = max(y, roi.Y);
+	int stopY = min(roi.Bottom, y + window);
+
+	int startMaskX = 0;
+	int startMaskY = 0;
+
+	//if the target x does not have enough space around it for the whole window then
+	if (startX - roi.X < padding || roi.Right - stopX < padding)
+	{
+		startMaskX = padding - min(startX - roi.X, roi.Right - stopX);
+		stopX -= startMaskX * 2;
+	}
+
+	//if the target y does not have enough space around it for the whole window then
+	if (startY - roi.Y < padding || roi.Bottom - stopY < padding)
+	{
+		startMaskY = padding - min(startY - roi.Y, roi.Bottom - stopY);
+		stopY -= startMaskY * 2;
+	}
+
+	return
+	{
+		padding,
+		window,
+
+		startX,
+		stopX,
+		startMaskX,
+
+		startY,
+		stopY,
+		startMaskY
+	};
 }
 
 string getParamValue(string paramName, string param)

@@ -7,6 +7,7 @@
 #include "hsiHistogramEqualization.h"
 #include "medianFilter.h"
 #include "scaleFilter.h"
+#include "sobelEdgeDetection.h"
 #include "thresholdFilter.h"
 
 vector<FilterHelper*> filters =
@@ -19,6 +20,7 @@ vector<FilterHelper*> filters =
 	new HsiHistogramEqualization(),
 	new MedianFilter(),
 	new ScaleFilter(),
+	new SobelEdgeDetection(),
 	new ThresholdFilter()
 };
 

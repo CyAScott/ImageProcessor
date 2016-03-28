@@ -38,9 +38,9 @@ RawImage* HistogramStretch::ProcessInput(CommandLineArgModel* arg, RawImage* ima
 		{
 			Color color = image->GetPixel(x, y);
 
-			color.R = round(min(255.0, max(0.0, ((double)color.R - lower) * coefficient)));
-			color.B = round(min(255.0, max(0.0, ((double)color.B - lower) * coefficient)));
-			color.G = round(min(255.0, max(0.0, ((double)color.G - lower) * coefficient)));
+			color.R = roundToByte(((double)color.R - lower) * coefficient);
+			color.B = roundToByte(((double)color.B - lower) * coefficient);
+			color.G = roundToByte(((double)color.G - lower) * coefficient);
 
 			image->SetPixel(x, y, color);
 		}

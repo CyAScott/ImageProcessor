@@ -17,15 +17,15 @@ RawImage* HistogramEqualization::ProcessInput(CommandLineArgModel* arg, RawImage
 	{
 		probability = (double)histogram.R.at(i) / totalNumberOfPixels;
 		cumulativeProbabilityValueR += probability;
-		histogramPixelMapR.push_back(floor(cumulativeProbabilityValueR * 255.0));
+		histogramPixelMapR.push_back(roundToByte(floor(cumulativeProbabilityValueR * 255.0)));
 
 		probability = (double)histogram.G.at(i) / totalNumberOfPixels;
 		cumulativeProbabilityValueG += probability;
-		histogramPixelMapG.push_back(floor(cumulativeProbabilityValueG * 255.0));
+		histogramPixelMapG.push_back(roundToByte(floor(cumulativeProbabilityValueG * 255.0)));
 
 		probability = (double)histogram.B.at(i) / totalNumberOfPixels;
 		cumulativeProbabilityValueB += probability;
-		histogramPixelMapB.push_back(floor(cumulativeProbabilityValueB * 255.0));
+		histogramPixelMapB.push_back(roundToByte(floor(cumulativeProbabilityValueB * 255.0)));
 	}
 
 	for (int y = roi.Y; y < roi.Bottom; y++)

@@ -46,6 +46,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -56,8 +57,9 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -79,6 +81,7 @@
     <ClCompile Include="program.cpp" />
     <ClCompile Include="rawImage.cpp" />
     <ClCompile Include="scaleFilter.cpp" />
+    <ClCompile Include="sobelEdgeDetection.cpp" />
     <ClCompile Include="thresholdFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +97,7 @@
     <ClInclude Include="medianFilter.h" />
     <ClInclude Include="rawImage.h" />
     <ClInclude Include="scaleFilter.h" />
+    <ClInclude Include="sobelEdgeDetection.h" />
     <ClInclude Include="thresholdFilter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

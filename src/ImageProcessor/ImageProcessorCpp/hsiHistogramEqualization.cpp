@@ -1,19 +1,13 @@
 #include "hsiHistogramEqualization.h"
-# define PI           3.14159265358979323846  /* pi */
 
 RawImage* HsiHistogramEqualization::ProcessInput(CommandLineArgModel* arg, RawImage* image)
 {
 	HsiHistogramEqualizationModel* model = (HsiHistogramEqualizationModel*)arg->ParsedModel;
 	Rectangle roi = model->Roi;
-	HistogramResult histogram = image->GetHistogram(roi);
 	double
 		cumulativeProbabilityValue,
 		probability,
 		totalNumberOfPixels = roi.Height * roi.Width;
-
-	vector<vector<double>> H;
-	vector<vector<double>> S;
-	vector<vector<int>> I;
 
 	map<double, int> hHistogram;
 	map<double, int> sHistogram;
@@ -23,44 +17,15 @@ RawImage* HsiHistogramEqualization::ProcessInput(CommandLineArgModel* arg, RawIm
 	map<double, double> sHistogramMap;
 	map<int, int> iHistogramMap;
 
-	for (int y = roi.Y; y < roi.Bottom; y++)
+	HsiImage hsi = image->ExportHsi(roi);
+
+	for (int y = 0; y < roi.Height; y++)
 	{
-		vector<double> hRow;
-		vector<double> sRow;
-		vector<int> iRow;
-
-		for (int x = roi.X; x < roi.Right; x++)
+		for (int x = 0; x < roi.Width; x++)
 		{
-			Color color = image->GetPixel(x, y);
-			double r = color.R;
-			double b = color.B;
-			double g = color.G;
-
-			int i = (r + b + g) / 3;
-			
-			double m = min(min(r, b), g);
-			double s = i == 0 ? 0.0 : 1.0 - m / (double)i;
-
-			double h = 0.0;
-			if (r - g == 0.0 && r - b == 0.0)
-			{
-				h = 0.0;
-			}
-			else
-			{
-				if (g - b >= 0.0)
-				{
-					h = acos((r - 0.5 * g - 0.5 * b) / sqrt(r * r + g * g + b * b - r * g - r * b - g * b)) * 180.0 / PI;
-				}
-				if (g - b < 0.0)
-				{
-					h = 360.0 - acos((r - 0.5 * g - 0.5 * b) / sqrt(r * r + g * g + b * b - r * g - r * b - g * b)) * 180.0 / PI;
-				}
-			}
-
-			hRow.push_back(h);
-			sRow.push_back(s);
-			iRow.push_back(i);
+			int i = hsi.I.at(y).at(x);
+			double s = hsi.S.at(y).at(x);
+			double h = hsi.H.at(y).at(x);
 
 			if (model->H)
 			{
@@ -99,12 +64,7 @@ RawImage* HsiHistogramEqualization::ProcessInput(CommandLineArgModel* arg, RawIm
 				}
 			}
 		}
-
-		H.push_back(hRow);
-		S.push_back(sRow);
-		I.push_back(iRow);
 	}
-
 
 	if (model->H)
 	{
@@ -113,7 +73,7 @@ RawImage* HsiHistogramEqualization::ProcessInput(CommandLineArgModel* arg, RawIm
 		{
 			probability = (double)it->second / totalNumberOfPixels;
 			cumulativeProbabilityValue += probability;
-			hHistogramMap[it->first] = cumulativeProbabilityValue * 0;
+			hHistogramMap[it->first] = cumulativeProbabilityValue * 360.0;
 		}
 	}
 
@@ -135,57 +95,31 @@ RawImage* HsiHistogramEqualization::ProcessInput(CommandLineArgModel* arg, RawIm
 		{
 			probability = (double)it->second / totalNumberOfPixels;
 			cumulativeProbabilityValue += probability;
-			iHistogramMap[it->first] = min(255.0, max(0.0, round(cumulativeProbabilityValue * 255.0)));
+			iHistogramMap[it->first] = roundToByte(cumulativeProbabilityValue * 255.0);
 		}
 	}
 
-	for (int y = roi.Y; y < roi.Bottom; y++)
-		for (int x = roi.X; x < roi.Right; x++)
+	for (int y = 0; y < roi.Height; y++)
+	{
+		for (int x = 0; x < roi.Width; x++)
 		{
-			Color color;
-			double hh = model->H ? hHistogramMap[H.at(y).at(x)] : H.at(y).at(x);
-			double ss = model->S ? sHistogramMap[S.at(y).at(x)] : S.at(y).at(x);
-			double ii = model->I ? iHistogramMap[I.at(y).at(x)] : I.at(y).at(x);
-
-			if (hh == 0)
+			if (model->H)
 			{
-				color.B = min(255.0, max(0.0, round(ii*(1 - ss))));
-				color.G = min(255.0, max(0.0, round(ii*(1 - ss))));
-				color.R = min(255.0, max(0.0, round(ii*(1 + 2 * ss))));
+				hsi.H.at(y).at(x) = hHistogramMap[hsi.H.at(y).at(x)];
 			}
-			if (hh > 0.0 && hh < 120.0)
+			if (model->S)
 			{
-				color.B = min(255.0, max(0.0, round(ii*(1 - ss))));
-				color.R = min(255.0, max(0.0, round(ii*(1 + ss*cos((hh / 180)*PI) / cos(PI*(60 - hh) / 180)))));
-				color.G = min(255.0, max(0.0, round(3 * ii - (double)color.R - (double)color.B)));
+				hsi.S.at(y).at(x) = sHistogramMap[hsi.S.at(y).at(x)];
 			}
-			if (hh == 120.0)
+			if (model->I)
 			{
-				color.B = min(255.0, max(0.0, round(ii*(1 - ss))));
-				color.G = min(255.0, max(0.0, round(ii*(1 + 2 * ss))));
-				color.R = min(255.0, max(0.0, round(ii*(1 - ss))));
+				hsi.I.at(y).at(x) = iHistogramMap[hsi.I.at(y).at(x)];
 			}
-			if (hh > 120.0 && hh < 240.0)
-			{
-				color.R = min(255.0, max(0.0, round(ii*(1 - ss))));
-				color.G = min(255.0, max(0.0, round(ii*(1 + ss*cos(PI*(hh - 120) / 180) / cos(PI*(180 - hh) / 180)))));
-				color.B = min(255.0, max(0.0, round(3 * ii - (double)color.R - (double)color.G)));
-			}
-			if (hh == 240.0)
-			{
-				color.B = min(255.0, max(0.0, round(ii*(1 + 2 * ss))));
-				color.G = min(255.0, max(0.0, round(ii*(1 - ss))));
-				color.R = min(255.0, max(0.0, round(ii*(1 - ss))));
-			}
-			if (hh > 240.0 && hh <= 360.0)
-			{
-				color.G = min(255.0, max(0.0, round(ii*(1 - ss))));
-				color.B = min(255.0, max(0.0, round(ii*(1 + ss*cos(PI*(hh - 240) / 180) / cos(PI*(300 - hh) / 180)))));
-				color.R = min(255.0, max(0.0, round(3 * ii - (double)color.G - (double)color.B)));
-			}
-
-			image->SetPixel(x, y, color);
 		}
+	}
+
+	image->ApplyHsi(roi, hsi);
+
 	return image;
 }
 bool HsiHistogramEqualization::IsThisArgumentForThisFilter(string arg)

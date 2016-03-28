@@ -4,8 +4,8 @@ RawImage* ScaleFilter::scaleDown(double scale, RawImage* image)
 {
 	Size size = image->GetSize();
 
-	int newHeight = round((double)size.Height * scale);
-	int newWidth = round((double)size.Width * scale);
+	int newHeight = (int)round((double)size.Height * scale);
+	int newWidth = (int)round((double)size.Width * scale);
 	RawImage* returnValue = new RawImage(newWidth, newHeight);
 	Rectangle roi = fromSize(size);
 	double scaleUp = 1.0 / scale;
@@ -16,8 +16,8 @@ RawImage* ScaleFilter::scaleDown(double scale, RawImage* image)
 	for (int y = 0; y < newHeight; y++)
 		for (int x = 0; x < newWidth; x++)
 		{
-			int sourceX = round((double)x * scaleUp);
-			int sourceY = round((double)y * scaleUp);
+			int sourceX = (int)round((double)x * scaleUp);
+			int sourceY = (int)round((double)y * scaleUp);
 
 			returnValue->SetPixel(x, y, image->GetAverage(sourceX, sourceY, scaleWindow, scaleWindow, roi));
 		}
@@ -28,8 +28,8 @@ RawImage* ScaleFilter::scaleUp(double scale, RawImage* image)
 {
 	Size size = image->GetSize();
 
-	int newHeight = round(size.Height * scale);
-	int newWidth = round(size.Width * scale);
+	int newHeight = (int)round(size.Height * scale);
+	int newWidth = (int)round(size.Width * scale);
 	RawImage* returnValue = new RawImage(newWidth, newHeight);
 	Rectangle roi = fromSize(size);
 	double scaleDown = 1.0 / scale;
@@ -37,8 +37,8 @@ RawImage* ScaleFilter::scaleUp(double scale, RawImage* image)
 	for (int y = 0; y < newHeight; y++)
 		for (int x = 0; x < newWidth; x++)
 		{
-			int sourceX = round((double)x * scaleDown);
-			int sourceY = round((double)y * scaleDown);
+			int sourceX = (int)round((double)x * scaleDown);
+			int sourceY = (int)round((double)y * scaleDown);
 
 			if (sourceX < roi.Width && sourceY < roi.Height)
 				returnValue->SetPixel(x, y, image->GetPixel(sourceX, sourceY));
@@ -48,7 +48,7 @@ RawImage* ScaleFilter::scaleUp(double scale, RawImage* image)
 	MedianFilterModel* model = new MedianFilterModel();
 	model->hasRoi = true;
 	model->Roi = fromSize(returnValue->GetSize());
-	model->Window = ceil(scale * 3.0);
+	model->Window = (int)ceil(scale * 3.0);
 	model->X = true;
 	model->Y = true;
 
