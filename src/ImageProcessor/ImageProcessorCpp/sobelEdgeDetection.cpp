@@ -5,7 +5,6 @@ RawImage* SobelEdgeDetection::ProcessInput(CommandLineArgModel* arg, RawImage* i
 	SobelEdgeDetectionModel* model = (SobelEdgeDetectionModel*)arg->ParsedModel;
 
 	Rectangle roi = model->Roi;
-	int window = model->Window;
 
 	Size size = image->GetSize();
 	RawImage* returnValue = image->Clone();
@@ -130,7 +129,7 @@ RawImage* SobelEdgeDetection::ProcessInput(CommandLineArgModel* arg, RawImage* i
 					break;
 				case RGB:
 					rgbResult = image->SobelRgb(x, y, roi, masks);
-					rgbColor = { rgbResult.R.G, rgbResult.G.G, rgbResult.B.G };
+					rgbColor = { roundToByte(rgbResult.R.G), roundToByte(rgbResult.G.G), roundToByte(rgbResult.B.G) };
 
 					if (model->ColorChannel1 &&
 						(model->Direction == -1 ||
