@@ -48,185 +48,263 @@ on that number:
 
 All Arguments---------------------------------------------------------------------------------------
 
--Help: Optional
+Displaying help info:
 
-    Will list all possible command line arguments and their descriptions.
--Input: Required
+	The general format for arguments is:
 
-    The Input argument is used to tell the program where the read the input
-    file. Multiple arguments of this type are not allowed. The argument
-    requires exactly 1 paramter(s).
+		-Input <input file path> ... {pipe line arguments} ... -Output <output file
+		path>
 
-    Argument Parameter(s):
-            Format: <string>
-            Optional: False
-            Description:
-                    The relative path to the file.
--Output: Required
+	Pipe line arguments are arguments where the order does matter. Each pipe line
+	argument applies an filter on the image and applies it in the order in which
+	is was sent to the program. The format for an argument and paramters is:
 
-    The Output argument is used to tell the program where to write the output
-    file. If the file already exists then it will be over written. Multiple
-    arguments of this type are not allowed. The argument requires exactly 1
-    paramter(s).
+		-{Argument} {Paramter 1} {Paramter 2} ... {Paramter N}
 
-    Argument Parameter(s):
-            Format: <string>
-            Optional: False
-            Description:
-                    The relative path to the file.
--Scale: Optional
+	The following arguments can be used:
+		-Help: Optional
 
-    The Scale argument is used to scale an image.  The number parameter repsents
-    percentage to increase or decrease the image by (1.0 = 100% or no scaling).
-    This parameter is not optional.
+			Will list all possible command line arguments and their descriptions.
 
-    Argument Parameter(s):
-            Format: <double>
-            Optional: False
-            Description:
-                    Must be a value greater than or equal to zero. Values below 1.0 will
-                    shrink the image and values above 1.0 will increase the image size. If
-                    the value is 1.0 then the image will not be altered.
--ThresholdFilter: Optional
 
-    The ThresholdFilter argument is used to convert the image into a set of
-    black or white pixels or color binarization. The 'brightness' of each pixel
-    will be calculated into a value between 0 and 1 (where 0 is white and 1 is
-    black).
+		-Input: Required
 
-    Argument Parameter(s):
-            Format: threshold:<double>
-            Optional: True
-            Description:
-                    If the brightness of the pixel is greater than or equal to this value then
-                    the resulting pixel will be white else it will be black. The default
-                    value is 0.5.
+			The Input argument is used to tell the program where the read the input
+			file.Multiple arguments of this type are not allowed. The argument requires
+			exactly 1 paramter(s).
 
-            Format: roi:<x>,<y>,<width>,<height>
-            Optional: True
-            Description:
-                    Applies the filter to a target section of the image. The default value is
-                    the whole image.
--Grayscale: Optional
-
-    Converts the image into colors ranging between black and white (all gray
-    colors).
-
-    Argument Parameter(s):
-            Format: roi:<x>,<y>,<width>,<height>
-            Optional: True
-            Description:
-                    Applies the filter to a target section of the image. The default value is
-                    the whole image.
--Median: Optional
-
-    Applies an uniform smoothing filter to an image using the median method.
-
-    Argument Parameter(s):
-            Format: x:<boolean>
-            Optional: True
-            Description:
-                    Applies the filter only in the left and right directions. The default
-                    value is false.
-
-            Format: roi:<x>,<y>,<width>,<height>
-            Optional: True
-            Description:
-                    Applies the filter to a target section of the image. The default value is
-                    the whole image.
-
-            Format: y:<boolean>
-            Optional: True
-            Description:
-                    Applies the filter only in the up and down directions. The default value
-                    is false.
-
-            Format: window:<integer>
-            Optional: True
-            Description:
-                    When calculating the resulting pixel, a window surrounding the target
-                    pixel is used for the calculation. This value must be a positive odd
-                    integer. The default value is 3.
-
--GrayHistogram: Optional
-
-		Generates a histogram image based on a gray scale render of the image.
-
-		Argument Parameter(s):
-				Format: roi:<x>,<y>,<width>,<height>
-				ptional:
+			Argument Parameter(s):
+				Format: <string>
+				Optional: false
 				Description:
-						Applies the filter to a target section of the image. The default value is the
-						whole image
+					The relative path to the file.
 
 
--GrayHistogramEqualization: Optional
+		-Output: Required
 
-		Changes the contrast of a gray image based on the histogram.
+			The Output argument is used to tell the program where to write the output file.
+			If the file already exists then it will be over written.Multiple arguments of
+			this type are not allowed. The argument requires exactly 1 paramter(s).
 
-		Argument Parameter(s):
-				Format: roi:<x>,<y>,<width>,<height>
-				ptional:
+			Argument Parameter(s):
+				Format: <string>
+				Optional: false
 				Description:
-						Applies the filter to a target section of the image. The default value is the
-						whole image
+					The relative path to the file.
 
 
--HistogramStretch: Optional
+		-Scale: Optional
 
-		Changes the contrast of an image based on a percentile in the histogram.
+			The Scale argument is used to scale an image.  The number parameter repsents
+			percentage to increase or decrease the image by (1.0 = 100% or no scaling).
+			This parameter is not optional.
 
-		Argument Parameter(s):
-				Format: roi:<x>,<y>,<width>,<height>
-				ptional:
+			Argument Parameter(s):
+				Format: <double>
+				Optional: true
 				Description:
-						Applies the filter to a target section of the image. The default value is the
-						whole image
+					Must be a value greater than or equal to zero. Values below 1.0 will shrink the
+					image and values above 1.0 will increase the image size. If the value is 1.0
+					then the image will not be altered.
+
+
+		-ThresholdFilter: Optional
+
+			The ThresholdFilter argument is used to convert the image into a set of black
+			or white pixels or color binarization. The 'brightness' of each pixel will be
+			calculated into a value between 0 and 1 (where 0 is white and 1 is black).
+
+			Argument Parameter(s):
+				Format: threshold:<double>
+				Optional: true
+				Description:
+					Must be a value greater than or equal to zero.
+
+				Format: roi:<x>,<y>,<width>,<height>
+				Optional: true
+				Description:
+					Applies the filter to a target section of the image. The default value is the
+					whole image
+
+
+		-Grayscale: Optional
+
+			Converts the image into colors ranging between black and white (all gray
+			colors).
+
+			Argument Parameter(s):
+				Format: roi:<x>,<y>,<width>,<height>
+				Optional: true
+				Description:
+					Applies the filter to a target section of the image. The default value is the
+					whole image
+
+
+		-Median: Optional
+
+			Applies an uniform smoothing filter to an image using the median method.
+
+			Argument Parameter(s):
+				Format: x:<boolean>
+				Optional: true
+				Description:
+					Applies the filter only in the left and right directions. The default value is
+					false.
+
+				Format: y:<boolean>
+				Optional: true
+				Description:
+					Applies the filter only in the up and down directions. The default value is
+					false.
+
+				Format: window:<integer>
+				Optional: true
+				Description:
+					When calculating the resulting pixel, a window surrounding the target pixel is
+					used for the calculation. This value must be a positive odd integer. The
+					default value is 3.
+
+				Format: roi:<x>,<y>,<width>,<height>
+				Optional: true
+				Description:
+					Applies the filter to a target section of the image. The default value is the
+					whole image
+
+
+		-GrayHistogram: Optional
+
+			Generates a histogram image based on a gray scale render of the image.
+
+			Argument Parameter(s):
+				Format: roi:<x>,<y>,<width>,<height>
+				Optional: true
+				Description:
+					Applies the filter to a target section of the image. The default value is the
+					whole image
+
+
+		-GrayHistogramEqualization: Optional
+
+			Changes the contrast of a gray image based on the histogram.
+
+			Argument Parameter(s):
+				Format: roi:<x>,<y>,<width>,<height>
+				Optional: true
+				Description:
+					Applies the filter to a target section of the image. The default value is the
+					whole image
+
+
+		-HistogramStretch: Optional
+
+			Changes the contrast of an image based on a percentile in the histogram.
+
+			Argument Parameter(s):
+				Format: roi:<x>,<y>,<width>,<height>
+				Optional: true
+				Description:
+					Applies the filter to a target section of the image. The default value is the
+					whole image
 
 				Format: percentile:<double>
-				ptional:
+				Optional: true
 				Description:
-						Must be a value between 0 and 1. The default value is 0.05. This value will be
-						used as the lower and upper percentile of the histogram.
+					Must be a value between 0 and 1. The default value is 0.05. This value will be
+					used as the lower and upper percentile of the histogram.
 
 
--HistogramEqualization: Optional
+		-HistogramEqualization: Optional
 
-		Changes the contrast of an image based on the histogram.
+			Changes the contrast of an image based on the histogram.
 
-		Argument Parameter(s):
+			Argument Parameter(s):
 				Format: roi:<x>,<y>,<width>,<height>
-				ptional:
+				Optional: true
 				Description:
-						Applies the filter to a target section of the image. The default value is the
-						whole image
+					Applies the filter to a target section of the image. The default value is the
+					whole image
 
 
--HsiHistogramEqualization: Optional
+		-HsiHistogramEqualization: Optional
 
-		Changes the contrast of an image based on the histogram.
+			Changes the contrast of an image based on the histogram.
 
-		Argument Parameter(s):
+			Argument Parameter(s):
 				Format: roi:<x>,<y>,<width>,<height>
-				ptional:
+				Optional: true
 				Description:
-						Applies the filter to a target section of the image. The default value is the
-						whole image
+					Applies the filter to a target section of the image. The default value is the
+					whole image
 
 				Format: h:<boolean>
-				ptional:
+				Optional: true
 				Description:
-						Applies the filter only to the H channel. The color of the image will change if
-						this filter option is used. The default value is false.
+					Applies the filter only to the H channel. The color of the image will change if
+					this filter option is used. The default value is false.
 
 				Format: s:<boolean>
-				ptional:
+				Optional: true
 				Description:
-						Applies the filter only to the S channel. The default value is true.
+					Applies the filter only to the S channel. The default value is true.
 
 				Format: i:<boolean>
-				ptional:
+				Optional: true
 				Description:
-						Applies the filter only to the I channel. The default value is true.
+					Applies the filter only to the I channel. The default value is true.
 
+
+		-SobelEdgeDetection: Optional
+
+			Edge detection using Sobel operator.
+
+			Argument Parameter(s):
+				Format: roi:<x>,<y>,<width>,<height>
+				Optional: true
+				Description:
+					Applies the filter to a target section of the image. The default value is the
+					whole image
+
+				Format: window:<integer>
+				Optional: true
+				Description:
+					When calculating the resulting pixel, a window surrounding the target pixel is
+					used for the calculation. This value must be a positive odd integer (only 3
+					and 5 are supported). The default value is 3.
+
+				Format: threshold:<byte>
+				Optional: true
+				Description:
+					Must be a value 0 and 255. Colors greater than or equal to the value will be
+					set as white else black. If no threshold value is provided then the image will
+					be grayscale.
+
+				Format: direction:<integer>
+				Optional: true
+				Description:
+					A direction measured in degrees. Only edges that match this angle will be used.
+					If no direction value is provided then all angles will be used.
+
+				Format: color:<enum>
+				Optional: true
+				Description:
+					The color space to use. The default value is gray. Possible values are: hsi, 
+					rgb gray.
+
+				Format: colorChannel1:<boolean>
+				Optional: true
+				Description:
+					If the color parameter is rgb or hsi then r or h channel will be used of edge
+					detection. The default value is true.
+
+				Format: colorChannel2:<boolean>
+				Optional: true
+				Description:
+					If the color parameter is rgb or hsi then g or s channel will be used of edge
+					detection. The default value is true.
+
+				Format: colorChannel3:<boolean>
+				Optional: true
+				Description:
+					If the color parameter is rgb or hsi then b or i channel will be used of edge
+					detection. The default value is true.
 

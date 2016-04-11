@@ -24,3 +24,6 @@
 ./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/Color/garden.jpg -sobeledgedetection color:rgb colorChannel1:false colorChannel2:true colorChannel3:false -output output.sobeledgedetection.rgb.g.png
 ./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/Color/garden.jpg -sobeledgedetection color:rgb colorChannel1:false colorChannel2:false colorChannel3:true -output output.sobeledgedetection.rgb.b.png
 ./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/Color/garden.jpg -sobeledgedetection color:hsi colorChannel1:false colorChannel2:false colorChannel3:true -output output.sobeledgedetection.hsi.i.png
+./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/Color/garden.jpg -sobeledgedetection color:hsi colorChannel1:false colorChannel2:true colorChannel3:false -output output.sobeledgedetection.hsi.s.png
+./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/Color/garden.jpg -sobeledgedetection color:hsi colorChannel1:true colorChannel2:false colorChannel3:false -output output.sobeledgedetection.hsi.h.png
+./src/ImageProcessor/ImageProcessorCpp/Release/ImageProcessor -input assets/Color/garden.jpg -sobeledgedetection color:hsi colorChannel1:true colorChannel2:true colorChannel3:true -output output.sobeledgedetection.hsi.png
