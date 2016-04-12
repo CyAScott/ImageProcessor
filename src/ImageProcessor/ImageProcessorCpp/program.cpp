@@ -39,11 +39,7 @@ int main(int argc, char* argv[])
 			}
 		}
 
-		#if _WIN32
-			string convertForReadCommand = "convertimage \"";
-		#else
-			string convertForReadCommand = "convert \"";
-		#endif
+		string convertForReadCommand = "convert \"";
 		convertForReadCommand.append(input);
 		convertForReadCommand.append("\" -compress none \"");
 		convertForReadCommand.append(inputTemp);
@@ -57,11 +53,7 @@ int main(int argc, char* argv[])
 		
 		process(args, new RawImage(inputTemp))->Save(outputTemp);
 		
-		#if _WIN32
-			string convertForWriteCommand = "convertimage \"";
-		#else
-			string convertForWriteCommand = "convert \"";
-		#endif
+		string convertForWriteCommand = "convert \"";
 		convertForWriteCommand.append(outputTemp);
 		convertForWriteCommand.append("\" \"");
 		convertForWriteCommand.append(output);

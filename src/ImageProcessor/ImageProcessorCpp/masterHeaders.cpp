@@ -8,7 +8,7 @@ byte roundToByte(int value)
 {
 	return (byte)min(255, max(0, value));
 }
-Rectangle fromSize(Size size)
+Rectangle fromSize(ImageSize size)
 {
 	return 
 	{

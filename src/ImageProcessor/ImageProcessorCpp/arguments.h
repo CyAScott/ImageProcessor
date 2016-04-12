@@ -648,6 +648,411 @@ ArgAttribute const ArgAttributes[] =
 				false
 			}
 		}
+	},
+	/*
+	_______________________________________________________________
+
+	Open CV Filters
+	_______________________________________________________________
+	*/
+	{
+		"OpenCvGrayHistogramEqualization",
+		"Changes the contrast of a gray image based on the histogram.",
+
+		//AllowRoi
+		true,
+		//IsFilter
+		true,
+		//OnlyOne
+		false,
+		//Required
+		false,
+
+		//ParamRangeError
+		"The -OpenCvGrayHistogramEqualization argument requires at most one parameter (i.e. -OpenCvGrayHistogramEqualization roi:0,0,10,10).",
+		//ParamMin
+		0,
+		//ParamMax
+		1,
+
+		{
+			{
+				//Format
+				"roi:<x>,<y>,<width>,<height>",
+				//Pattern,
+				"\\s*roi\\s*\\:\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*",
+				//Description
+				"Applies the filter to a target section of the image. The default value is the whole image",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			}
+		}
+	},
+	{
+		"OpenCvHistogramEqualization",
+		"Changes the contrast of an image based on the histogram.",
+
+		//AllowRoi
+		true,
+		//IsFilter
+		true,
+		//OnlyOne
+		false,
+		//Required
+		false,
+
+		//ParamRangeError
+		"The -OpenCvHistogramEqualization argument requires at most one parameter (i.e. -OpenCvHistogramEqualization roi:0,0,10,10).",
+		//ParamMin
+		0,
+		//ParamMax
+		1,
+
+		{
+			{
+				//Format
+				"roi:<x>,<y>,<width>,<height>",
+				//Pattern,
+				"\\s*roi\\s*\\:\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*",
+				//Description
+				"Applies the filter to a target section of the image. The default value is the whole image",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			}
+		}
+	},
+	{
+		"OpenCvYCrCbHistogramEqualization",
+		"Changes the contrast of an image based on the histogram.",
+
+		//AllowRoi
+		true,
+		//IsFilter
+		true,
+		//OnlyOne
+		false,
+		//Required
+		false,
+
+		//ParamRangeError
+		"The -OpenCvYCrCbHistogramEqualization argument requires at most four parameters (i.e. -OpenCvYCrCbHistogramEqualization roi:0,0,10,10 y:true cr:false cb:true).",
+		//ParamMin
+		0,
+		//ParamMax
+		4,
+
+		{
+			{
+				//Format
+				"roi:<x>,<y>,<width>,<height>",
+				//Pattern,
+				"\\s*roi\\s*\\:\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*",
+				//Description
+				"Applies the filter to a target section of the image. The default value is the whole image",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"y:<boolean>",
+				//Pattern,
+				"\\s*y\\s*\\:\\s*(true|false)\\s*",
+				//Description
+				"Applies the filter only to the Y channel. "
+				"The color of the image will change if this filter option is used. "
+				"The default value is true.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"Cr:<boolean>",
+				//Pattern,
+				"\\s*Cr\\s*\\:\\s*(true|false)\\s*",
+				//Description
+				"Applies the filter only to the Cr channel. "
+				"The default value is false.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"Cb:<boolean>",
+				//Pattern,
+				"\\s*Cb\\s*\\:\\s*(true|false)\\s*",
+				//Description
+				"Applies the filter only to the Cb channel. "
+				"The default value is false.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			}
+		}
+	},
+	{
+		"OpenCvSobelEdgeDetection",
+		"Edge detection using Sobel operator.",
+
+		//AllowRoi
+		true,
+		//IsFilter
+		true,
+		//OnlyOne
+		false,
+		//Required
+		false,
+
+		//ParamRangeError
+		"The -OpenCvSobelEdgeDetection argument requires at most eight parameters (i.e. -OpenCvSobelEdgeDetection roi:0,0,10,10 window:3 threshold:90 direction:45 colorChannel1:true colorChannel2:false colorChannel3:false).",
+		//ParamMin
+		0,
+		//ParamMax
+		8,
+
+		{
+			{
+				//Format
+				"roi:<x>,<y>,<width>,<height>",
+				//Pattern,
+				"\\s*roi\\s*\\:\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*",
+				//Description
+				"Applies the filter to a target section of the image. The default value is the whole image",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"window:<integer>",
+				//Pattern,
+				"\\s*window\\s*\\:\\s*\\(3|5)\\s*",
+				//Description
+				"When calculating the resulting pixel, a window surrounding the target pixel is used for the calculation. "
+				"This value must be a positive odd integer (only 3 and 5 are supported). "
+				"The default value is 3.",
+				//Optional
+				true
+			},
+			{
+				//Format
+				"threshold:<byte>",
+				//Pattern,
+				"\\s*threshold\\s*\\:\\s*(22[0-5]|2[01]\\d|1\\d+\\d+|\\d+\\d+|\\d+)\\s*",
+				//Description
+				"Must be a value 0 and 255. "
+				"Colors greater than or equal to the value will be set as white else black. "
+				"If no threshold value is provided then the image will be grayscale.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"direction:<integer>",
+				//Pattern,
+				"\\s*direction\\s*\\:\\s*\\d+\\s*",
+				//Description
+				"A direction measured in degrees. "
+				"Only edges that match this angle will be used. "
+				"If no direction value is provided then all angles will be used.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"color:<enum>",
+				//Pattern,
+				"\\s*color\\s*\\:\\s*(gray|rgb|hsi)\\s*",
+				//Description
+				"The color space to use. "
+				"The default value is gray.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"colorChannel1:<boolean>",
+				//Pattern,
+				"\\s*colorChannel1\\s*\\:\\s*(true|false)\\s*",
+				//Description
+				"If the color parameter is rgb or hsi then r or h channel will be used of edge detection. "
+				"The default value is true.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"colorChannel2:<boolean>",
+				//Pattern,
+				"\\s*colorChannel2\\s*\\:\\s*(true|false)\\s*",
+				//Description
+				"If the color parameter is rgb or hsi then g or s channel will be used of edge detection. "
+				"The default value is true.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"colorChannel3:<boolean>",
+				//Pattern,
+				"\\s*colorChannel3\\s*\\:\\s*(true|false)\\s*",
+				//Description
+				"If the color parameter is rgb or hsi then b or i channel will be used of edge detection. "
+				"The default value is true.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			}
+		}
+	},
+	{
+		"OpenCvCannyEdgeDetection",
+		"Edge detection using Sobel operator.",
+
+		//AllowRoi
+		true,
+		//IsFilter
+		true,
+		//OnlyOne
+		false,
+		//Required
+		false,
+
+		//ParamRangeError
+		"The -OpenCvCannyEdgeDetection argument requires at most eight parameters (i.e. -OpenCvCannyEdgeDetection roi:0,0,10,10 window:3 threshold:90 direction:45 colorChannel1:true colorChannel2:false colorChannel3:false).",
+		//ParamMin
+		0,
+		//ParamMax
+		8,
+
+		{
+			{
+				//Format
+				"roi:<x>,<y>,<width>,<height>",
+				//Pattern,
+				"\\s*roi\\s*\\:\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*",
+				//Description
+				"Applies the filter to a target section of the image. The default value is the whole image",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"window:<integer>",
+				//Pattern,
+				"\\s*window\\s*\\:\\s*\\(3|5)\\s*",
+				//Description
+				"When calculating the resulting pixel, a window surrounding the target pixel is used for the calculation. "
+				"This value must be a positive odd integer (only 3 and 5 are supported). "
+				"The default value is 3.",
+				//Optional
+				true
+			},
+			{
+				//Format
+				"threshold:<byte>",
+				//Pattern,
+				"\\s*threshold\\s*\\:\\s*(22[0-5]|2[01]\\d|1\\d+\\d+|\\d+\\d+|\\d+)\\s*",
+				//Description
+				"Must be a value 0 and 255. "
+				"Colors greater than or equal to the value will be set as white else black. "
+				"If no threshold value is provided then the image will be grayscale.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"direction:<integer>",
+				//Pattern,
+				"\\s*direction\\s*\\:\\s*\\d+\\s*",
+				//Description
+				"A direction measured in degrees. "
+				"Only edges that match this angle will be used. "
+				"If no direction value is provided then all angles will be used.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"color:<enum>",
+				//Pattern,
+				"\\s*color\\s*\\:\\s*(gray|rgb|ycrcb)\\s*",
+				//Description
+				"The color space to use. "
+				"The default value is gray.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"colorChannel1:<boolean>",
+				//Pattern,
+				"\\s*colorChannel1\\s*\\:\\s*(true|false)\\s*",
+				//Description
+				"If the color parameter is rgb or hsi then r or h channel will be used of edge detection. "
+				"The default value is true.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"colorChannel2:<boolean>",
+				//Pattern,
+				"\\s*colorChannel2\\s*\\:\\s*(true|false)\\s*",
+				//Description
+				"If the color parameter is rgb or hsi then g or s channel will be used of edge detection. "
+				"The default value is true.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			},
+			{
+				//Format
+				"colorChannel3:<boolean>",
+				//Pattern,
+				"\\s*colorChannel3\\s*\\:\\s*(true|false)\\s*",
+				//Description
+				"If the color parameter is rgb or hsi then b or i channel will be used of edge detection. "
+				"The default value is true.",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			}
+		}
 	}
 };
 

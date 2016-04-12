@@ -11,10 +11,14 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+
+using namespace::cv;
+using namespace std;
 
 # define PI           3.14159265358979323846  /* pi */
-
-using namespace std;
 
 typedef unsigned char byte;
 
@@ -29,7 +33,8 @@ enum ColorSpaceEnum
 {
 	GRAY = 1,
 	RGB = 2,
-	HSI = 3
+	HSI = 3,
+	YCRCB = 4
 };
 
 struct HistogramResult
@@ -101,7 +106,7 @@ struct Rectangle
 	int Right;
 };
 
-struct Size
+struct ImageSize
 {
 	int Width;
 	int Height;
@@ -116,6 +121,7 @@ struct SobelResult
 	//gradient amplitude (abs(Gx) + abs(Gy)) / 10
 	int G;
 	//edge direction
+	//Gx == 0 ? 0 : round(atan(Gy / Gx) * 180.0 / PI);
 	int Direction;
 };
 
@@ -128,6 +134,7 @@ struct SobelDoubleResult
 	//gradient amplitude (abs(Gx) + abs(Gy)) / 10
 	double G;
 	//edge direction
+	//Gx == 0 ? 0 : round(atan(Gy / Gx) * 180.0 / PI);
 	int Direction;
 };
 
@@ -194,7 +201,7 @@ class FilterHelper
 
 byte roundToByte(double value);
 byte roundToByte(int value);
-Rectangle fromSize(Size size);
+Rectangle fromSize(ImageSize size);
 Rectangle parseRoi(string param);
 SobelHsiColorResult sobelHsi(HsiImage* image, int x, int y, Rectangle roi, vector<vector<int>> masks);
 SobelTargetRoi getSobelTargetRoi(int x, int y, Rectangle roi, vector<vector<int>> masks);

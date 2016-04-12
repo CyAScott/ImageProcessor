@@ -139,6 +139,11 @@
     <ClCompile Include="hsiHistogramEqualization.cpp" />
     <ClCompile Include="masterHeaders.cpp" />
     <ClCompile Include="medianFilter.cpp" />
+    <ClCompile Include="openCvCannyEdgeDetection.cpp" />
+    <ClCompile Include="openCvGrayHistogramEqualization.cpp" />
+    <ClCompile Include="openCvHistogramEqualization.cpp" />
+    <ClCompile Include="openCvSobelEdgeDetection.cpp" />
+    <ClCompile Include="openCvYCrCbHistogramEqualization.cpp" />
     <ClCompile Include="program.cpp" />
     <ClCompile Include="rawImage.cpp" />
     <ClCompile Include="scaleFilter.cpp" />
@@ -156,6 +161,11 @@
     <ClInclude Include="hsiHistogramEqualization.h" />
     <ClInclude Include="masterHeaders.h" />
     <ClInclude Include="medianFilter.h" />
+    <ClInclude Include="openCvCannyEdgeDetection.h" />
+    <ClInclude Include="openCvGrayHistogramEqualization.h" />
+    <ClInclude Include="openCvHistogramEqualization.h" />
+    <ClInclude Include="openCvSobelEdgeDetection.h" />
+    <ClInclude Include="openCvYCrCbHistogramEqualization.h" />
     <ClInclude Include="rawImage.h" />
     <ClInclude Include="scaleFilter.h" />
     <ClInclude Include="sobelEdgeDetection.h" />

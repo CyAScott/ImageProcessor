@@ -10,6 +10,12 @@
 #include "sobelEdgeDetection.h"
 #include "thresholdFilter.h"
 
+#include "openCvGrayHistogramEqualization.h"
+#include "openCvHistogramEqualization.h"
+#include "openCvYCrCbHistogramEqualization.h"
+#include "openCvSobelEdgeDetection.h"
+#include "openCvCannyEdgeDetection.h"
+
 vector<FilterHelper*> filters =
 {
 	new GrayHistogram(),
@@ -21,7 +27,13 @@ vector<FilterHelper*> filters =
 	new MedianFilter(),
 	new ScaleFilter(),
 	new SobelEdgeDetection(),
-	new ThresholdFilter()
+	new ThresholdFilter(),
+
+	new OpenCvGrayHistogramEqualization(),
+	new OpenCvHistogramEqualization(),
+	new OpenCvYCrCbHistogramEqualization(),
+	new OpenCvSobelEdgeDetection(),
+	new OpenCvCannyEdgeDetection()
 };
 
 RawImage* process(vector<CommandLineArgModel*> args, RawImage* image)

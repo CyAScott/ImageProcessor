@@ -8,7 +8,7 @@ class RawImage
 	private:
 		vector<vector<byte>> rawBytes;
 		byte getBrightness(int x, int y);
-		Size size;
+		ImageSize size;
 
 	public:
 		RawImage(RawImage* rawImage);
@@ -20,8 +20,10 @@ class RawImage
 
 		void Save(string path);
 
+		Mat CloneToMat(Rectangle roi);
 		RawImage* Clone();
-		Size GetSize();
+		ImageSize GetSize();
+		void Import(Mat img, int placeOnX, int placeOnY);
 
 		Color GetAverage(int x, int y, int width, int height, Rectangle roi);
 		Color GetPixel(int x, int y);

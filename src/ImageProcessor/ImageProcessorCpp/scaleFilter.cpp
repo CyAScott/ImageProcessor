@@ -2,7 +2,7 @@
 
 RawImage* ScaleFilter::scaleDown(double scale, RawImage* image)
 {
-	Size size = image->GetSize();
+	ImageSize size = image->GetSize();
 
 	int newHeight = (int)round((double)size.Height * scale);
 	int newWidth = (int)round((double)size.Width * scale);
@@ -26,7 +26,7 @@ RawImage* ScaleFilter::scaleDown(double scale, RawImage* image)
 }
 RawImage* ScaleFilter::scaleUp(double scale, RawImage* image)
 {
-	Size size = image->GetSize();
+	ImageSize size = image->GetSize();
 
 	int newHeight = (int)round(size.Height * scale);
 	int newWidth = (int)round(size.Width * scale);

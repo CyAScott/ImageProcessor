@@ -311,13 +311,56 @@ byte RawImage::getBrightness(int x, int y)
 	return (rawBytes.at(y).at(x) + rawBytes.at(y).at(x + 1) + rawBytes.at(y).at(x + 2)) / 3;
 }
 
+Mat RawImage::CloneToMat(Rectangle roi)
+{
+	Mat returnValue(Mat(roi.Height, roi.Width, CV_8UC3));
+	returnValue = Scalar(0, 0, 0);
+
+	for (int row = roi.Y, y = 0; y < roi.Height; row++, y++)
+	{
+		for (int col = roi.X * 3, x = 0; x < roi.Width; col += 3, x++)
+		{
+			Vec3b pixel = returnValue.at<Vec3b>(Point(x, y));
+
+			//blue
+			pixel.val[0] = rawBytes.at(row).at(col + 2);
+			//greeen
+			pixel.val[1] = rawBytes.at(row).at(col + 1);
+			//red
+			pixel.val[2] = rawBytes.at(row).at(col);
+
+			returnValue.at<Vec3b>(Point(x, y)) = pixel;
+		}
+	}
+
+	return returnValue;
+}
 RawImage* RawImage::Clone()
 {
 	return new RawImage(this);
 }
-Size RawImage::GetSize()
+ImageSize RawImage::GetSize()
 {
 	return size;
+}
+void RawImage::Import(Mat img, int placeOnX, int placeOnY)
+{
+	if (img.type() == CV_8UC1)
+	{
+		cvtColor(img, img, CV_GRAY2RGB);
+	}
+
+	for (int row = placeOnY, y = 0; y < img.rows; row++, y++)
+	{
+		for (int col = placeOnX * 3, x = 0; x < img.cols; col += 3, x++)
+		{
+			Vec3b pixel = img.at<Vec3b>(Point(x, y));
+
+			rawBytes.at(row).at(col) = pixel.val[2];
+			rawBytes.at(row).at(col + 1) = pixel.val[1];
+			rawBytes.at(row).at(col + 2) = pixel.val[0];
+		}
+	}
 }
 
 Color RawImage::GetAverage(int x, int y, int width, int height, Rectangle roi)
