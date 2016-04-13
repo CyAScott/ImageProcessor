@@ -1,9 +1,9 @@
 masterHeaders.o: masterHeaders.cpp
 	g++ -Wall -c -std=c++11 masterHeaders.cpp -o Release/masterHeaders.o
-	
+
 arguments.o: arguments.cpp
 	g++ -Wall -c -std=c++11 arguments.cpp -o Release/arguments.o
-	
+
 rawImage.o: rawImage.cpp
 	g++ -Wall -c -std=c++11 rawImage.cpp -o Release/rawImage.o
 
@@ -27,21 +27,36 @@ grayHistogramEqualization.o: grayHistogramEqualization.cpp
 
 histogramStretch.o: histogramStretch.cpp
 	g++ -Wall -c -std=c++11 histogramStretch.cpp -o Release/histogramStretch.o
-	
+
 histogramEqualization.o: histogramEqualization.cpp
 	g++ -Wall -c -std=c++11 histogramEqualization.cpp -o Release/histogramEqualization.o
 
 hsiHistogramEqualization.o: hsiHistogramEqualization.cpp
 	g++ -Wall -c -std=c++11 hsiHistogramEqualization.cpp -o Release/hsiHistogramEqualization.o
-	
+
 sobelEdgeDetection.o: sobelEdgeDetection.cpp
 	g++ -Wall -c -std=c++11 sobelEdgeDetection.cpp -o Release/sobelEdgeDetection.o
-	
+
+openCvCannyEdgeDetection.o: openCvCannyEdgeDetection.cpp
+	g++ -Wall -c -std=c++11 openCvCannyEdgeDetection.cpp -o Release/openCvCannyEdgeDetection.o
+
+openCvGrayHistogramEqualization.o: openCvGrayHistogramEqualization.cpp
+	g++ -Wall -c -std=c++11 openCvGrayHistogramEqualization.cpp -o Release/openCvGrayHistogramEqualization.o
+
+openCvHistogramEqualization.o: openCvHistogramEqualization.cpp
+	g++ -Wall -c -std=c++11 openCvHistogramEqualization.cpp -o Release/openCvHistogramEqualization.o
+
+openCvSobelEdgeDetection.o: openCvSobelEdgeDetection.cpp
+	g++ -Wall -c -std=c++11 openCvSobelEdgeDetection.cpp -o Release/openCvSobelEdgeDetection.o
+
+openCvYCrCbHistogramEqualization.o: openCvYCrCbHistogramEqualization.cpp
+	g++ -Wall -c -std=c++11 openCvYCrCbHistogramEqualization.cpp -o Release/openCvYCrCbHistogramEqualization.o
+
 filterPipe.o: filterPipe.cpp
 	g++ -Wall -c -std=c++11 filterPipe.cpp -o Release/filterPipe.o
 
 program.o: program.cpp
 	g++ -Wall -c -std=c++11 program.cpp -o Release/program.o
 
-all : masterHeaders.o arguments.o rawImage.o grayscaleFilter.o medianFilter.o scaleFilter.o thresholdFilter.o grayHistogram.o grayHistogramEqualization.o histogramStretch.o histogramEqualization.o hsiHistogramEqualization.o sobelEdgeDetection.o filterPipe.o program.o
-	g++ -Wall Release/masterHeaders.o Release/arguments.o Release/rawImage.o Release/grayscaleFilter.o Release/medianFilter.o Release/scaleFilter.o Release/thresholdFilter.o Release/grayHistogram.o Release/grayHistogramEqualization.o Release/histogramStretch.o Release/histogramEqualization.o Release/hsiHistogramEqualization.o Release/sobelEdgeDetection.o Release/filterPipe.o Release/program.o -o Release/ImageProcessor	
+all : masterHeaders.o arguments.o rawImage.o grayscaleFilter.o medianFilter.o scaleFilter.o thresholdFilter.o grayHistogram.o grayHistogramEqualization.o histogramStretch.o histogramEqualization.o hsiHistogramEqualization.o sobelEdgeDetection.o openCvCannyEdgeDetection.o openCvGrayHistogramEqualization.o openCvHistogramEqualization.o openCvSobelEdgeDetection.o openCvYCrCbHistogramEqualization.o filterPipe.o program.o
+	g++ -Wall Release/masterHeaders.o Release/arguments.o Release/rawImage.o Release/grayscaleFilter.o Release/medianFilter.o Release/scaleFilter.o Release/thresholdFilter.o Release/grayHistogram.o Release/grayHistogramEqualization.o Release/histogramStretch.o Release/histogramEqualization.o Release/hsiHistogramEqualization.o Release/sobelEdgeDetection.o Release/openCvCannyEdgeDetection.o Release/openCvGrayHistogramEqualization.o Release/openCvHistogramEqualization.o Release/openCvSobelEdgeDetection.o Release/openCvYCrCbHistogramEqualization.o Release/filterPipe.o Release/program.o -o Release/ImageProcessor	
