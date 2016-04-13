@@ -49,6 +49,8 @@ RawImage* OpenCvCannyEdgeDetection::ProcessInput(CommandLineArgModel* arg, RawIm
 
 			merge(channels, img);
 			break;
+		case HSI:
+			throw runtime_error("HSI is not support with OpenCvCannyEdgeDetection.");
 		case YCRCB:
 			cvtColor(img, img, CV_BGR2YCrCb);
 			

@@ -168,6 +168,8 @@ RawImage* SobelEdgeDetection::ProcessInput(CommandLineArgModel* arg, RawImage* i
 
 					returnValue->SetPixel(x, y, rgbColor);
 					break;
+				case YCRCB:
+					throw runtime_error("YCRCB is not support with SobelEdgeDetection.");
 			}
 		}
 	}
