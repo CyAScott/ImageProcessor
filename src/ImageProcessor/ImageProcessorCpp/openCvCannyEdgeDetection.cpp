@@ -92,7 +92,7 @@ void OpenCvCannyEdgeDetection::ParseArgument(CommandLineArgModel* arg)
 	model->ColorChannel1 = true;
 	model->ColorChannel2 = true;
 	model->ColorChannel3 = true;
-	model->ColorSpace = YCRCB;// GRAY;
+	model->ColorSpace = GRAY;
 	model->Direction = -1;
 	model->hasRoi = false;
 	model->Threshold = -1;
