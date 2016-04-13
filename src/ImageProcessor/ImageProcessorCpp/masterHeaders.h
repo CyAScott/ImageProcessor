@@ -11,9 +11,16 @@
 #include <string>
 #include <sstream>
 #include <vector>
+
+#if _WIN32
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#else
+#include "opencv2/core/core.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#endif
 
 using namespace::cv;
 using namespace std;
