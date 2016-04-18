@@ -30,7 +30,7 @@
 
 ./src/ImageProcessor/ImageProcessorCpp/ImageProcessor -input "assets/Gray Level/slope.jpg" -opencvhistogramequalization -output output.grayhistogramequalization.opencv.png
 ./src/ImageProcessor/ImageProcessorCpp/ImageProcessor -input output.grayhistogramequalization.png -grayhistogram -output output.grayhistogramequalization.grayhistogram.opencv.png
-./src/ImageProcessor/ImageProcessorCpp/ImageProcessor -input assets/Color/pen.jpg -histogramequalization -output output.histogramequalization.opencv.png
+./src/ImageProcessor/ImageProcessorCpp/ImageProcessor -input assets/Color/pen.jpg -opencvycrcbhistogramequalization y:true -output output.opencvycrcbhistogramequalization.opencv.png
 ./src/ImageProcessor/ImageProcessorCpp/ImageProcessor -input assets/Color/pen.jpg -opencvycrcbhistogramequalization y:true Cr:true Cb:false -output output.hsihistogramequalization.yCr.opencv.png
 ./src/ImageProcessor/ImageProcessorCpp/ImageProcessor -input assets/Color/pen.jpg -opencvycrcbhistogramequalization y:false Cr:true Cb:true -output output.hsihistogramequalization.CrCb.opencv.png
 ./src/ImageProcessor/ImageProcessorCpp/ImageProcessor -input assets/Color/pen.jpg -opencvycrcbhistogramequalization y:true Cr:true Cb:true -output output.hsihistogramequalization.yCrCb.opencv.png
@@ -40,6 +40,6 @@
 ./src/ImageProcessor/ImageProcessorCpp/ImageProcessor -input "assets/Gray Level/floor01.jpg" -opencvsobeledgedetection threshold:150 -output output.sobeledgedetection.gray.threshold.opencv.png
 ./src/ImageProcessor/ImageProcessorCpp/ImageProcessor -input "assets/Gray Level/floor01.jpg" -opencvsobeledgedetection direction:0 -output output.sobeledgedetection.gray.direction.opencv.png
 
-./src/ImageProcessor/ImageProcessorCpp/ImageProcessor -input "assets/Gray Level/floor01.jpg" -opencvcannyedgedetection roi:10,5,100,250 -output output.sobeledgedetection.gray.roi.opencv.png
-./src/ImageProcessor/ImageProcessorCpp/ImageProcessor -input "assets/Gray Level/floor01.jpg" -opencvcannyedgedetection threshold:150 -output output.sobeledgedetection.gray.threshold.opencv.png
-./src/ImageProcessor/ImageProcessorCpp/ImageProcessor -input "assets/Gray Level/floor01.jpg" -opencvcannyedgedetection direction:0 -output output.sobeledgedetection.gray.direction.opencv.png
+./src/ImageProcessor/ImageProcessorCpp/ImageProcessor -input "assets/Gray Level/floor01.jpg" -opencvcannyedgedetection roi:10,5,100,250 -output output.opencvcannyedgedetection.gray.roi.opencv.png
+./src/ImageProcessor/ImageProcessorCpp/ImageProcessor -input "assets/Gray Level/floor01.jpg" -opencvcannyedgedetection threshold:150 -output output.opencvcannyedgedetection.gray.threshold.opencv.png
+./src/ImageProcessor/ImageProcessorCpp/ImageProcessor -input "assets/Gray Level/floor01.jpg" -opencvcannyedgedetection direction:0 -output output.opencvcannyedgedetection.gray.direction.opencv.png
