@@ -61,7 +61,7 @@ Rectangle parseRoi(string param)
 	return{ -1, -1, -1, -1, -1, -1 };
 }
 
-SobelHsiColorResult sobelHsi(HsiImage* image, int x, int y, Rectangle roi, vector<vector<int>> masks)
+SobelHsiColorResult sobelHsi(HsiImage* image, int x, int y, Rectangle roi, vector< vector<int> > masks)
 {
 
 	SobelHsiColorResult returnValue =
@@ -114,7 +114,7 @@ SobelHsiColorResult sobelHsi(HsiImage* image, int x, int y, Rectangle roi, vecto
 	return returnValue;
 }
 
-SobelTargetRoi getSobelTargetRoi(int x, int y, Rectangle roi, vector<vector<int>> masks)
+SobelTargetRoi getSobelTargetRoi(int x, int y, Rectangle roi, vector< vector<int> > masks)
 {
 	int window = (int)masks.size();
 

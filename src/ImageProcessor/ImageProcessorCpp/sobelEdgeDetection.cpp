@@ -7,7 +7,7 @@ RawImage* SobelEdgeDetection::ProcessInput(CommandLineArgModel* arg, RawImage* i
 	Rectangle roi = model->Roi;
 
 	RawImage* returnValue = image->Clone();
-	vector<vector<int>> masks;
+	vector< vector<int> > masks;
 	const int masks3x3[][3] =
 	{
 		{ -10, 0, 10 },

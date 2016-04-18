@@ -89,9 +89,9 @@ struct HsiColor
 
 struct HsiImage
 {
-	vector<vector<double>> H;
-	vector<vector<double>> S;
-	vector<vector<int>> I;
+	vector< vector<double> > H;
+	vector< vector<double> > S;
+	vector< vector<int> > I;
 };
 
 struct Rectangle
@@ -203,8 +203,8 @@ byte roundToByte(double value);
 byte roundToByte(int value);
 Rectangle fromSize(ImageSize size);
 Rectangle parseRoi(string param);
-SobelHsiColorResult sobelHsi(HsiImage* image, int x, int y, Rectangle roi, vector<vector<int>> masks);
-SobelTargetRoi getSobelTargetRoi(int x, int y, Rectangle roi, vector<vector<int>> masks);
+SobelHsiColorResult sobelHsi(HsiImage* image, int x, int y, Rectangle roi, vector< vector<int> > masks);
+SobelTargetRoi getSobelTargetRoi(int x, int y, Rectangle roi, vector< vector<int> > masks);
 string getParamValue(string paramName, string param);
 string toLowerString(string s);
 string trim(string str);

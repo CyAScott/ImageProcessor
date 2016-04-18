@@ -169,9 +169,9 @@ RawImage::RawImage(int width, int height)
 
 HsiImage RawImage::ExportHsi(Rectangle roi)
 {
-	vector<vector<double>> H;
-	vector<vector<double>> S;
-	vector<vector<int>> I;
+	vector< vector<double> > H;
+	vector< vector<double> > S;
+	vector< vector<int> > I;
 
 	for (int y = roi.Y; y < roi.Bottom; y++)
 	{
@@ -404,7 +404,7 @@ Color RawImage::GetPixel(int x, int y)
 	};
 }
 
-SobelResult RawImage::Sobel(int x, int y, Rectangle roi, vector<vector<int>> masks)
+SobelResult RawImage::Sobel(int x, int y, Rectangle roi, vector< vector<int> > masks)
 {
 	SobelResult returnValue = { 0, 0, 0, 0 };
 
@@ -431,7 +431,7 @@ SobelResult RawImage::Sobel(int x, int y, Rectangle roi, vector<vector<int>> mas
 
 	return returnValue;
 }
-SobelRgbColorResult RawImage::SobelRgb(int x, int y, Rectangle roi, vector<vector<int>> masks)
+SobelRgbColorResult RawImage::SobelRgb(int x, int y, Rectangle roi, vector< vector<int> > masks)
 {
 	SobelRgbColorResult returnValue =
 	{

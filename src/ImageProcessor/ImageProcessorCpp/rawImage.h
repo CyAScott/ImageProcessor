@@ -6,7 +6,7 @@
 class RawImage
 {
 	private:
-		vector<vector<byte>> rawBytes;
+		vector< vector<byte> > rawBytes;
 		byte getBrightness(int x, int y);
 		ImageSize size;
 
@@ -27,8 +27,8 @@ class RawImage
 
 		Color GetAverage(int x, int y, int width, int height, Rectangle roi);
 		Color GetPixel(int x, int y);
-		SobelResult Sobel(int x, int y, Rectangle roi, vector<vector<int>> masks);
-		SobelRgbColorResult SobelRgb(int x, int y, Rectangle roi, vector<vector<int>> masks);
+		SobelResult Sobel(int x, int y, Rectangle roi, vector< vector<int> > masks);
+		SobelRgbColorResult SobelRgb(int x, int y, Rectangle roi, vector< vector<int> > masks);
 
 		void SetPixel(int x, int y, Color color);
 		void SetPixel(int x, int y, byte color);
