@@ -21,7 +21,7 @@ RawImage* DisparityMap::ProcessInput(CommandLineArgModel* arg, RawImage* image)
 	Mat leftImg = image->CloneToMat(left);
 	Mat rightImg = image->CloneToMat(right);
 
-	StereoBM stereo = StereoBM::create(16, 15);
+	Ptr<StereoBM> stereo = StereoBM::create(16, 15);
 
 	Mat disparity;
 	stereo->compute(leftImg, rightImg, disparity);
