@@ -649,6 +649,41 @@ ArgAttribute const ArgAttributes[] =
 			}
 		}
 	},
+	{
+		"DisparityMap",
+		"Converts a side by side stereo image into a depth gray image where dark is far away and light is up close.",
+
+		//AllowRoi
+		true,
+		//IsFilter
+		true,
+		//OnlyOne
+		false,
+		//Required
+		false,
+
+		//ParamRangeError
+		"The -DisparityMap argument requires at most one parameter (i.e. -DisparityMap roi:0,0,10,10).",
+		//ParamMin
+		0,
+		//ParamMax
+		1,
+
+		{
+			{
+				//Format
+				"roi:<x>,<y>,<width>,<height>",
+				//Pattern,
+				"\\s*roi\\s*\\:\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*",
+				//Description
+				"Applies the filter to a target section of the image. The default value is the whole image",
+				//Optional
+				true,
+				//IsCaseSensitive
+				false
+			}
+		}
+	},
 	/*
 	_______________________________________________________________
 

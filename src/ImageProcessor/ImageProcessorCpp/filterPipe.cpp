@@ -1,4 +1,5 @@
 #include "filterPipe.h"
+#include "disparityMap.h"
 #include "grayHistogram.h"
 #include "grayHistogramEqualization.h"
 #include "grayscaleFilter.h"
@@ -18,6 +19,7 @@
 
 vector<FilterHelper*> filters =
 {
+	new DisparityMap(),
 	new GrayHistogram(),
 	new GrayHistogramEqualization(),
 	new GrayscaleFilter(),

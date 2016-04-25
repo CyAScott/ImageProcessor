@@ -130,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="arguments.cpp" />
+    <ClCompile Include="disparityMap.cpp" />
     <ClCompile Include="filterPipe.cpp" />
     <ClCompile Include="grayHistogramEqualization.cpp" />
     <ClCompile Include="grayscaleFilter.cpp" />
@@ -152,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arguments.h" />
+    <ClInclude Include="disparityMap.h" />
     <ClInclude Include="filterPipe.h" />
     <ClInclude Include="grayHistogramEqualization.h" />
     <ClInclude Include="grayscaleFilter.h" />
