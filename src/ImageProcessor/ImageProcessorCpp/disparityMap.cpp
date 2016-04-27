@@ -21,12 +21,35 @@ RawImage* DisparityMap::ProcessInput(CommandLineArgModel* arg, RawImage* image)
 	Mat leftImg = image->CloneToMat(left);
 	Mat rightImg = image->CloneToMat(right);
 
-	Ptr<StereoBM> stereo = StereoBM::create(16, 15);
+	cvtColor(leftImg, leftImg, CV_BGR2GRAY);
+	cvtColor(rightImg, rightImg, CV_BGR2GRAY);
+
+	Ptr<StereoSGBM> stereo = StereoSGBM::create(
+		0,		//minDisparity
+		144,	//numDisparities
+		3,		//blockSize
+		3 * 3 * 4, 
+		3 * 3 * 32, 
+		1,		//disp12MaxDiff
+		10,		//preFilterCap
+		10,		//uniquenessRatio
+		100,	//speckleWindowSize
+		32,		//speckleRange
+		true);	//mode
 
 	Mat disparity;
-	stereo->compute(leftImg, rightImg, disparity);
+	stereo->compute(rightImg, leftImg, disparity);
+
+	double max, min;
+	minMaxIdx(disparity, &min, &max);
+	convertScaleAbs(disparity, disparity, 255 / max);
+
+	cvtColor(disparity, disparity, CV_GRAY2RGB);
+
+	imwrite("F:\\1\\raw-stereo.disparity.opencv.png", disparity);
 	
 	RawImage* newImage = new RawImage(left.Width, left.Height);
+
 
 	newImage->Import(disparity, 0, 0);
 
